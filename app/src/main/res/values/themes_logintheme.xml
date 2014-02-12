@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="LoginTheme" parent="@style/_LoginTheme"/>
+
+  <style name="_LoginTheme" parent="Theme.AppCompat.Light">
+
+    <item name="android:editTextStyle">@style/EditTextLoginTheme</item>
+
+    <item name="android:buttonStyle">@style/ButtonLoginTheme</item>
+
+    <item name="android:imageButtonStyle">@style/ImageButtonLoginTheme</item>
+
+  </style>
+
+</resources>
