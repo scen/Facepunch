@@ -23,6 +23,22 @@ android {
     }
 }
 
+apply plugin: 'hugo'
+apply plugin: 'android-apt'
+
+dependencies {
+    apt "org.androidannotations:androidannotations:3.0.1"
+    compile "org.androidannotations:androidannotations-api:3.0.1"
+}
+
+apt {
+    arguments {
+        androidManifestFile variant.processResources.manifestFile
+        resourcePackageName 'com.stanleycen.facepunch'
+
+    }
+}
+
 dependencies {
     compile 'com.android.support:appcompat-v7:+'
     compile 'de.greenrobot:eventbus:2.2.0'
