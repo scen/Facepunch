@@ -91,7 +91,7 @@ public class LoginActivity extends Activity {
     }
 
     private void gotoMainActivity() {
-        Intent intent = new Intent(this, MainActivity_.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
     }

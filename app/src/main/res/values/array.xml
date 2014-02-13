@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="nav_drawer_strings">
+        <item>Home</item>
+        <item>Popular</item>
+        <item>Read</item>
+    </array>
+    <array name="nav_drawer_icons">
+        <item>@drawable/logo</item>
+        <item>@drawable/logo</item>
+        <item>@drawable/logo</item>
+    </array>
+</resources>
