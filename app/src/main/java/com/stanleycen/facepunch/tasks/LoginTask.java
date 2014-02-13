@@ -46,15 +46,16 @@ public class LoginTask extends AsyncTask<Pair<String, String>, Void, Void> {
 
         API.post("login.php?do=login", requestParams, new AsyncHttpResponseHandler() {
             @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                super.onFailure(statusCode, headers, responseBody, error);
+            }
+
+            @Override
             @DebugLog
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 super.onSuccess(statusCode, headers, responseBody);
 
-                String html = new String(responseBody);
-
-                Document doc = Jsoup.parse(html);
-
-                EventBus.getDefault().post(new LoginResponseEvent());
+                EventBus.getDefault().post(new LoginResponseEvent(true));
             }
         });
         return null;

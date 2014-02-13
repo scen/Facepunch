@@ -3,8 +3,16 @@ package com.stanleycen.facepunch.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Pair;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.RotateAnimation;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -26,6 +34,8 @@ import hugo.weaving.DebugLog;
 @EActivity(R.layout.activity_login)
 public class LoginActivity extends Activity {
     SystemBarTintManager tintManager;
+    RotateAnimation logoAnimation;
+    boolean showAnimation = false;
 
     @ViewById
     EditText username;
@@ -33,14 +43,18 @@ public class LoginActivity extends Activity {
     @ViewById
     EditText password;
 
+    @ViewById
+    Button loginButton;
+
+    @ViewById
+    ImageView facepunchLogo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (API.isLoggedIn() && false) {
-            Intent intent = new Intent(this, MainActivity_.class);
-            startActivity(intent);
-            finish();
+        if (API.isLoggedIn()) {
+            gotoMainActivity();
             return;
         }
 
@@ -50,16 +64,71 @@ public class LoginActivity extends Activity {
             tintManager.setStatusBarTintResource(R.color.facepunch_red);
         }
 
+        logoAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        logoAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+        logoAnimation.setDuration(750);
+        logoAnimation.setFillEnabled(true);
+        logoAnimation.setFillAfter(true);
+        logoAnimation.setRepeatCount(Animation.INFINITE);
+        logoAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                facepunchLogo.clearAnimation();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                if (!showAnimation) animation.cancel();
+            }
+        });
+
         EventBus.getDefault().register(this);
+    }
+
+    private void gotoMainActivity() {
+        Intent intent = new Intent(this, MainActivity_.class);
+        startActivity(intent);
+        finish();
+    }
+
+    void updateForm(boolean enabled) {
+        username.setEnabled(enabled);
+        password.setEnabled(enabled);
+        loginButton.setEnabled(enabled);
     }
 
     @Click
     void loginButton() {
+        facepunchLogo.startAnimation(logoAnimation);
+        updateForm(false);
+        showAnimation = true;
+        username.setError(null);
+        password.setError(null);
+
         (new LoginTask()).execute(new Pair<String, String>(username.getText().toString(), password.getText().toString()));
     }
 
     public void onEventMainThread(LoginResponseEvent loginResponseEvent) {
-        Toast.makeText(getApplicationContext(), ""+API.isLoggedIn(), Toast.LENGTH_SHORT).show();
+        updateForm(true);
+        showAnimation = false;
+
+        if (loginResponseEvent.success) {
+            if (API.isLoggedIn()) {
+                gotoMainActivity();
+            }
+            else {
+                username.setError("Invalid credentials");
+                password.setError("Invalid credentials");
+            }
+        }
+        else {
+            Util.toast(this, "Error connecting to Facepunch");
+        }
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.stanleycen.facepunch.util;
 
+import android.content.Context;
 import android.os.Build;
+import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -35,5 +37,9 @@ public class Util {
 
     public static Date now() {
         return new Date();
+    }
+
+    public static void toast(Context ctx, String str) {
+        Toast.makeText(ctx, str, Toast.LENGTH_SHORT).show();
     }
 }

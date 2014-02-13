@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="facepunch_red">#CE0000</color>
+    <color name="nav_divider">#e3e9e3</color>
+    <color name="nav_background">#fff3f3f3</color>
 </resources>
