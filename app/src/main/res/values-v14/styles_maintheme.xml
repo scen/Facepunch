@@ -29,8 +29,11 @@
         <item name="android:actionModeBackground">@drawable/cab_background_top_maintheme</item>
         <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_maintheme</item>
         <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Maintheme</item>
-        
-        
+        <item name="android:actionOverflowButtonStyle">@style/overflow</item>
+    </style>
+
+    <style name="overflow" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_action_overflow</item>
     </style>
 
     <style name="ActionBar.Solid.Maintheme" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
