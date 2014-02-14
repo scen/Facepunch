@@ -5,17 +5,25 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stanleycen.facepunch.R;
 import com.stanleycen.facepunch.adapter.NavDrawerListAdapter;
+import com.stanleycen.facepunch.fragment.ForumFragment;
+import com.stanleycen.facepunch.fragment.ForumFragment_;
+import com.stanleycen.facepunch.fragment.PopularFragment;
+import com.stanleycen.facepunch.fragment.PopularFragment_;
+import com.stanleycen.facepunch.fragment.ReadFragment;
+import com.stanleycen.facepunch.fragment.ReadFragment_;
 import com.stanleycen.facepunch.model.NavDrawerItem;
 import com.stanleycen.facepunch.util.API;
 import com.stanleycen.facepunch.util.Util;
@@ -39,6 +47,7 @@ import hugo.weaving.DebugLog;
 @OptionsMenu(R.menu.menu_main)
 public class MainActivity extends ActionBarActivity {
     SystemBarTintManager tintManager;
+    String[] navMenuStrings;
 
     @ViewById
     DrawerLayout drawerLayout;
@@ -61,7 +70,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void setTitle(CharSequence title) {
-        appTitle = title;
+        drawerTitle = title;
         getSupportActionBar().setTitle(title);
     }
 
@@ -134,7 +143,7 @@ public class MainActivity extends ActionBarActivity {
 
     @AfterViews
     void initNavDrawer() {
-        String[] navMenuStrings = getResources().getStringArray(R.array.nav_drawer_strings);
+        navMenuStrings = getResources().getStringArray(R.array.nav_drawer_strings);
         TypedArray navMenuIcons = getResources().obtainTypedArray(R.array.nav_drawer_icons);
 
         assert navMenuStrings.length == navMenuIcons.length();
@@ -147,6 +156,7 @@ public class MainActivity extends ActionBarActivity {
 
         navDrawerListAdapter = new NavDrawerListAdapter(this, navDrawerItems);
         navDrawer.setAdapter(navDrawerListAdapter);
+        navDrawer.setOnItemClickListener(new DrawerItemClickListener());
 
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.drawable.ic_navigation_drawer, R.string.app_name, R.string.app_name) {
             @DebugLog
@@ -166,6 +176,8 @@ public class MainActivity extends ActionBarActivity {
 
         drawerLayout.setDrawerListener(drawerToggle);
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+
+        onDrawerItemSelect(0);
     }
 
     @OptionsItem(R.id.action_settings)
@@ -176,5 +188,37 @@ public class MainActivity extends ActionBarActivity {
     @OptionsItem(R.id.action_about)
     void aboutSelected() {
 
+    }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            onDrawerItemSelect(position);
+        }
+    }
+
+    private void onDrawerItemSelect(int pos) {
+        Fragment fragment = null;
+        switch (pos) {
+            case 0:
+                fragment = new ForumFragment_();
+                break;
+            case 1:
+                fragment = new PopularFragment_();
+                break;
+            case 2:
+                fragment = new ReadFragment_();
+            default:
+                break;
+        }
+
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.contentFrame, fragment).commit();
+            navDrawer.setItemChecked(pos, true);
+            navDrawer.setSelection(pos);
+            setTitle(navMenuStrings[pos]);
+            drawerLayout.closeDrawer(navDrawer);
+        }
     }
 }
