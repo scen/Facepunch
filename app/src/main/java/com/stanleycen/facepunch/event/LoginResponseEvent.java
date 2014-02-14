@@ -1,4 +1,4 @@
-package com.stanleycen.facepunch.events;
+package com.stanleycen.facepunch.event;
 
 /**
  * Created by scen on 2/11/14.

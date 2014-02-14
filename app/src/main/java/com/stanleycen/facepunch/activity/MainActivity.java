@@ -1,4 +1,4 @@
-package com.stanleycen.facepunch.activities;
+package com.stanleycen.facepunch.activity;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -8,19 +8,17 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stanleycen.facepunch.R;
-import com.stanleycen.facepunch.adapters.NavDrawerListAdapter;
-import com.stanleycen.facepunch.models.NavDrawerItem;
+import com.stanleycen.facepunch.adapter.NavDrawerListAdapter;
+import com.stanleycen.facepunch.model.NavDrawerItem;
 import com.stanleycen.facepunch.util.API;
 import com.stanleycen.facepunch.util.Util;
 
-import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
@@ -100,14 +98,6 @@ public class MainActivity extends ActionBarActivity {
         startActivity(intent);
         finish();
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater menuInflater = getMenuInflater();
-//        menuInflater.inflate(R.menu.menu_main, menu);
-//
-//        return true;
-//    }
 
     @Override
     protected void onStop() {

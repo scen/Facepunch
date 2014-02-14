@@ -2,12 +2,13 @@ package com.stanleycen.facepunch.util;
 
 import android.content.Context;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.PersistentCookieStore;
-import com.loopj.android.http.RequestParams;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.HttpClientStack;
+import com.android.volley.toolbox.Volley;
 
 import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreProtocolPNames;
 
 import hugo.weaving.DebugLog;
 
@@ -20,16 +21,9 @@ public class API {
 
     public static final int API_TIMEOUT_MS = 10000;
 
-    public static AsyncHttpClient client;
+    public static RequestQueue queue;
+    public static DefaultHttpClient client;
     public static PersistentCookieStore store;
-
-    public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        client.get(getAbsoluteUrl(url), params, responseHandler);
-    }
-
-    public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        client.post(getAbsoluteUrl(url), params, responseHandler);
-    }
 
     public static void logout() {
         store.clear();
@@ -55,18 +49,22 @@ public class API {
     }
 
     @DebugLog
-    private static String getAbsoluteUrl(String relativeUrl) {
+    public static String getAbsoluteUrl(String relativeUrl) {
         return BASE_URL + relativeUrl;
     }
 
     public static void init(Context context) {
-        client = new AsyncHttpClient();
         store = new PersistentCookieStore(context);
-        client.setCookieStore(API.store);
-        client.setUserAgent(USER_AGENT);
+
+        client = new DefaultHttpClient();
+        client.setCookieStore(store);
+        client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
+
+        queue = Volley.newRequestQueue(context, new HttpClientStack(client));
 
         store.clearExpired(Util.now());
 
         isLoggedIn();
     }
+
 }

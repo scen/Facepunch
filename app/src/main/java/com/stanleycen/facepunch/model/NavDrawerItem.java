@@ -1,4 +1,4 @@
-package com.stanleycen.facepunch.models;
+package com.stanleycen.facepunch.model;
 
 /**
  * Created by scen on 2/12/14.

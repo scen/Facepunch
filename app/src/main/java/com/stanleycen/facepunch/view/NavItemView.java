@@ -1,4 +1,4 @@
-package com.stanleycen.facepunch.views;
+package com.stanleycen.facepunch.view;
 
 import android.content.Context;
 import android.widget.ImageView;
@@ -6,7 +6,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.stanleycen.facepunch.R;
-import com.stanleycen.facepunch.models.NavDrawerItem;
+import com.stanleycen.facepunch.model.NavDrawerItem;
 
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;

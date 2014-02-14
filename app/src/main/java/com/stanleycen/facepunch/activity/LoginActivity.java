@@ -1,9 +1,8 @@
-package com.stanleycen.facepunch.activities;
+package com.stanleycen.facepunch.activity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
@@ -13,8 +12,8 @@ import android.widget.ImageView;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stanleycen.facepunch.R;
-import com.stanleycen.facepunch.events.LoginResponseEvent;
-import com.stanleycen.facepunch.tasks.LoginTask;
+import com.stanleycen.facepunch.event.LoginResponseEvent;
+import com.stanleycen.facepunch.request.LoginRequest;
 import com.stanleycen.facepunch.util.API;
 import com.stanleycen.facepunch.util.Util;
 
@@ -103,7 +102,8 @@ public class LoginActivity extends Activity {
         username.setError(null);
         password.setError(null);
 
-        (new LoginTask()).execute(new Pair<String, String>(username.getText().toString(), password.getText().toString()));
+        LoginRequest req = new LoginRequest(username.getText().toString(), password.getText().toString());
+        API.queue.add(req);
     }
 
     public void onEventMainThread(LoginResponseEvent loginResponseEvent) {

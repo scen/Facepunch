@@ -6,13 +6,13 @@
         android:icon="@drawable/logo"
         android:name="FacepunchApplication"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.LoginActivity_" android:theme="@style/RealLoginTheme">
+        <activity android:name=".activity.LoginActivity_" android:theme="@style/RealLoginTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.MainActivity_" android:theme="@style/Theme.Maintheme">
+        <activity android:name=".activity.MainActivity_" android:theme="@style/Theme.Maintheme">
         </activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>

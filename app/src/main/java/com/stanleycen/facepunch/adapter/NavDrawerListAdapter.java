@@ -1,13 +1,13 @@
-package com.stanleycen.facepunch.adapters;
+package com.stanleycen.facepunch.adapter;
 
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.stanleycen.facepunch.models.NavDrawerItem;
-import com.stanleycen.facepunch.views.NavItemView;
-import com.stanleycen.facepunch.views.NavItemView_;
+import com.stanleycen.facepunch.model.NavDrawerItem;
+import com.stanleycen.facepunch.view.NavItemView;
+import com.stanleycen.facepunch.view.NavItemView_;
 
 import java.util.ArrayList;
 
