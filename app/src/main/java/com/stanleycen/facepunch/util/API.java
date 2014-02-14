@@ -21,7 +21,7 @@ public class API {
     public static final String BASE_URL = "http://facepunch.com/";
     public static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1664.3 Safari/537.36";
 
-    public static final API_TIMEOUT_MS = 10000;
+    public static final int API_TIMEOUT_MS = 10000;
 
     public static AsyncHttpClient client;
     public static PersistentCookieStore store;
