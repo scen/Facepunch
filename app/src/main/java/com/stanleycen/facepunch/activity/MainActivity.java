@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -110,12 +111,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        setContentView(R.layout.activity_main);
-
         appTitle = drawerTitle = getTitle();
-
-//        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-//        navDrawer = (ListView) findViewById(R.id.navDrawer);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -169,6 +165,7 @@ public class MainActivity extends ActionBarActivity {
         };
 
         drawerLayout.setDrawerListener(drawerToggle);
+        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
     }
 
     @OptionsItem(R.id.action_settings)

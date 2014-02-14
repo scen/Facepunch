@@ -6,8 +6,8 @@
         <item>Read</item>
     </array>
     <array name="nav_drawer_icons">
-        <item>@drawable/logo</item>
-        <item>@drawable/logo</item>
-        <item>@drawable/logo</item>
+        <item>@drawable/home_icon</item>
+        <item>@drawable/popular_icon</item>
+        <item>@drawable/read_logo</item>
     </array>
 </resources>

@@ -6,13 +6,15 @@
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="25dp"
-        android:layout_height="wrap_content"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:src="@drawable/logo"
-        android:layout_centerVertical="true" />
+        android:background="@drawable/nav_list_item_icon_background"
+        android:layout_centerVertical="true"
+        android:padding="7dp" />
 
     <TextView
         android:id="@+id/title"
