@@ -2,8 +2,6 @@ package com.stanleycen.facepunch;
 
 import android.app.Application;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.PersistentCookieStore;
 import com.stanleycen.facepunch.util.API;
 
 /**

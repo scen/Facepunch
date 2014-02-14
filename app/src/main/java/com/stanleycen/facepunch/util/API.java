@@ -1,7 +1,6 @@
 package com.stanleycen.facepunch.util;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -9,8 +8,6 @@ import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
 
 import org.apache.http.cookie.Cookie;
-
-import java.util.Date;
 
 import hugo.weaving.DebugLog;
 

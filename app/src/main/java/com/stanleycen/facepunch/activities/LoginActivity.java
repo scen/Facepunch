@@ -3,19 +3,14 @@ package com.stanleycen.facepunch.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Pair;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
-import android.view.animation.BounceInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stanleycen.facepunch.R;
 import com.stanleycen.facepunch.events.LoginResponseEvent;
@@ -26,10 +21,8 @@ import com.stanleycen.facepunch.util.Util;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
-import org.apache.http.Header;
 
 import de.greenrobot.event.EventBus;
-import hugo.weaving.DebugLog;
 
 @EActivity(R.layout.activity_login)
 public class LoginActivity extends Activity {
@@ -91,7 +84,7 @@ public class LoginActivity extends Activity {
     }
 
     private void gotoMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, MainActivity_.class);
         startActivity(intent);
         finish();
     }

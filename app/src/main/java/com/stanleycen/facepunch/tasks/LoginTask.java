@@ -1,8 +1,6 @@
 package com.stanleycen.facepunch.tasks;
 
 import android.os.AsyncTask;
-import android.os.Debug;
-import android.util.Log;
 import android.util.Pair;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -12,9 +10,6 @@ import com.stanleycen.facepunch.util.API;
 import com.stanleycen.facepunch.util.Util;
 
 import org.apache.http.Header;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 import de.greenrobot.event.EventBus;
 import hugo.weaving.DebugLog;

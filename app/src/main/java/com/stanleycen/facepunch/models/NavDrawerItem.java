@@ -1,7 +1,5 @@
 package com.stanleycen.facepunch.models;
 
-import hugo.weaving.DebugLog;
-
 /**
  * Created by scen on 2/12/14.
  */

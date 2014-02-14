@@ -1,6 +1,5 @@
 package com.stanleycen.facepunch.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -8,15 +7,11 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stanleycen.facepunch.R;
@@ -25,13 +20,14 @@ import com.stanleycen.facepunch.models.NavDrawerItem;
 import com.stanleycen.facepunch.util.API;
 import com.stanleycen.facepunch.util.Util;
 
+import org.androidannotations.annotations.AfterInject;
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import de.greenrobot.event.EventBus;
 import hugo.weaving.DebugLog;
@@ -40,15 +36,15 @@ import hugo.weaving.DebugLog;
  * Created by scen on 2/11/14.
  */
 
-//@EActivity(R.layout.activity_main)
-//@OptionsMenu(R.menu.menu_main)
+@EActivity(R.layout.activity_main)
+@OptionsMenu(R.menu.menu_main)
 public class MainActivity extends ActionBarActivity {
     SystemBarTintManager tintManager;
 
-//    @ViewById
+    @ViewById
     DrawerLayout drawerLayout;
 
-//    @ViewById
+    @ViewById
     ListView navDrawer;
 
     CharSequence drawerTitle;
@@ -105,13 +101,13 @@ public class MainActivity extends ActionBarActivity {
         finish();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu_main, menu);
-
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater menuInflater = getMenuInflater();
+//        menuInflater.inflate(R.menu.menu_main, menu);
+//
+//        return true;
+//    }
 
     @Override
     protected void onStop() {
@@ -124,13 +120,34 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_main);
 
         appTitle = drawerTitle = getTitle();
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        navDrawer = (ListView) findViewById(R.id.navDrawer);
+//        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+//        navDrawer = (ListView) findViewById(R.id.navDrawer);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        if (Util.isKitKat()) {
+            tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintResource(R.color.facepunch_red);
+        }
+
+        if (savedInstanceState == null) {
+
+        }
+        else {
+
+        }
+
+//        EventBus.getDefault().register(this);
+    }
+
+    @AfterViews
+    void initNavDrawer() {
         String[] navMenuStrings = getResources().getStringArray(R.array.nav_drawer_strings);
         TypedArray navMenuIcons = getResources().obtainTypedArray(R.array.nav_drawer_icons);
 
@@ -144,10 +161,6 @@ public class MainActivity extends ActionBarActivity {
 
         navDrawerListAdapter = new NavDrawerListAdapter(this, navDrawerItems);
         navDrawer.setAdapter(navDrawerListAdapter);
-
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
 
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.drawable.ic_navigation_drawer, R.string.app_name, R.string.app_name) {
             @DebugLog
@@ -166,29 +179,14 @@ public class MainActivity extends ActionBarActivity {
         };
 
         drawerLayout.setDrawerListener(drawerToggle);
-
-        if (Util.isKitKat()) {
-            tintManager = new SystemBarTintManager(this);
-            tintManager.setStatusBarTintEnabled(true);
-            tintManager.setStatusBarTintResource(R.color.facepunch_red);
-        }
-
-        if (savedInstanceState == null) {
-
-        }
-        else {
-
-        }
-
-//        EventBus.getDefault().register(this);
     }
 
-//    @OptionsItem(R.id.action_settings)
+    @OptionsItem(R.id.action_settings)
     void settingsSelected() {
 
     }
 
-//    @OptionsItem(R.id.action_about)
+    @OptionsItem(R.id.action_about)
     void aboutSelected() {
 
     }
