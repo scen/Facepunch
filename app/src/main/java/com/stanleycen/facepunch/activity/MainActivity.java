@@ -1,11 +1,14 @@
 package com.stanleycen.facepunch.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -18,12 +21,12 @@ import android.widget.ListView;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stanleycen.facepunch.R;
 import com.stanleycen.facepunch.adapter.NavDrawerListAdapter;
-import com.stanleycen.facepunch.fragment.ForumFragment;
-import com.stanleycen.facepunch.fragment.ForumFragment_;
-import com.stanleycen.facepunch.fragment.PopularFragment;
+import com.stanleycen.facepunch.event.ActionBarTitleUpdateEvent;
+import com.stanleycen.facepunch.event.PagerPosUpdate;
+import com.stanleycen.facepunch.fragment.HomeFragment_;
 import com.stanleycen.facepunch.fragment.PopularFragment_;
-import com.stanleycen.facepunch.fragment.ReadFragment;
 import com.stanleycen.facepunch.fragment.ReadFragment_;
+import com.stanleycen.facepunch.model.IBackable;
 import com.stanleycen.facepunch.model.NavDrawerItem;
 import com.stanleycen.facepunch.util.API;
 import com.stanleycen.facepunch.util.Util;
@@ -48,6 +51,7 @@ import hugo.weaving.DebugLog;
 public class MainActivity extends ActionBarActivity {
     SystemBarTintManager tintManager;
     String[] navMenuStrings;
+    int pagerPos = 0;
 
     @ViewById
     DrawerLayout drawerLayout;
@@ -89,11 +93,14 @@ public class MainActivity extends ActionBarActivity {
     @DebugLog
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (drawerToggle.onOptionsItemSelected(item)) {
+        if (drawerToggle.isDrawerIndicatorEnabled() && drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
 
         switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
             case R.id.action_logout:
                 doLogout();
                 return true;
@@ -113,6 +120,26 @@ public class MainActivity extends ActionBarActivity {
     protected void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+
+        // find current fragment
+        IBackable curFrag = (IBackable) fm.findFragmentByTag("last_frag");
+
+        if (curFrag != null) {
+            if (curFrag.onBackPressed()) return; //handled
+        }
+
+        new AlertDialog.Builder(this).setMessage("Are you sure you want to quit Facepunch?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        MainActivity.super.onBackPressed();
+                    }
+                }).setNegativeButton(android.R.string.no, null).show();
     }
 
     @DebugLog
@@ -138,7 +165,20 @@ public class MainActivity extends ActionBarActivity {
 
         }
 
-//        EventBus.getDefault().register(this);
+        EventBus.getDefault().register(this);
+    }
+
+    public void onEvent(PagerPosUpdate update) {
+        pagerPos = update.pos;
+//        drawerToggle.setDrawerIndicatorEnabled(pagerPos == 0); // wtf why does this crash with VerifyError
+        boolean b = pagerPos == 0;
+        drawerToggle.setDrawerIndicatorEnabled(b);
+    }
+
+    public void onEvent(ActionBarTitleUpdateEvent update) {
+        if (update.title != null) {
+            setTitle(update.title);
+        }
     }
 
     @AfterViews
@@ -201,7 +241,7 @@ public class MainActivity extends ActionBarActivity {
         Fragment fragment = null;
         switch (pos) {
             case 0:
-                fragment = new ForumFragment_();
+                fragment = new HomeFragment_();
                 break;
             case 1:
                 fragment = new PopularFragment_();
@@ -212,12 +252,17 @@ public class MainActivity extends ActionBarActivity {
                 break;
         }
 
+        FragmentManager fm = getSupportFragmentManager();
+
+        // clear backstack
+        fm.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
         if (fragment != null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.contentFrame, fragment).commit();
+            fm.beginTransaction()
+                    .replace(R.id.contentFrame, fragment, "last_frag").addToBackStack("last_frag").commit();
             navDrawer.setItemChecked(pos, true);
             navDrawer.setSelection(pos);
-            setTitle(navMenuStrings[pos]);
+//            setTitle(navMenuStrings[pos]);
             drawerLayout.closeDrawer(navDrawer);
         }
     }
