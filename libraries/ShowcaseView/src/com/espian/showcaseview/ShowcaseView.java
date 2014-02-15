@@ -13,6 +13,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Region.Op;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -437,15 +438,26 @@ public class ShowcaseView extends RelativeLayout
      * @param endY                  y-coordinate or x-offset of the end position
      * @param absoluteCoordinates   If true, this will use absolute coordinates instead of coordinates relative to the center of the showcased view
      */
-    public void animateGesture(float startX, float startY, float endX,
-            float endY, boolean absoluteCoordinates) {
+    public void animateGesture(final float startX, final float startY, final float endX,
+                               final float endY, final boolean absoluteCoordinates) {
         mHandy = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
                 .inflate(R.layout.handy, null);
         addView(mHandy);
         moveHand(startX, startY, endX, endY, absoluteCoordinates, new AnimationEndListener() {
             @Override
             public void onAnimationEnd() {
-                removeView(mHandy);
+                new CountDownTimer(1000, 500) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        removeView(mHandy);
+                        animateGesture(startX, startY, endX, endY, absoluteCoordinates);
+                    }
+                }.start();
             }
         });
     }
