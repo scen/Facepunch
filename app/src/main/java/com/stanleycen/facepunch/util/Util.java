@@ -1,7 +1,9 @@
 package com.stanleycen.facepunch.util;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
@@ -15,6 +17,23 @@ import java.util.Date;
 public class Util {
     public static boolean isKitKat() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+    }
+
+    public SharedPreferences getSharedPrefs(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+    }
+
+    // if its the first time showing something, e.g. a ShowcaseView
+    public boolean isFirstTime(Context context, String pref) {
+        return !getSharedPrefs(context).getBoolean(pref, false);
+    }
+
+    public void setFirstTimeDone(Context context, String pref, boolean val) {
+        getSharedPrefs(context).edit().putBoolean(pref, val).commit();
+    }
+
+    public void setFirstTimeDone(Context context, String pref) {
+        setFirstTimeDone(context, pref, true);
     }
 
     public static String hashMD5(String str) {
