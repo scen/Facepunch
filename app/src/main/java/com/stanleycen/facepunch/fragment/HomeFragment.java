@@ -1,5 +1,6 @@
 package com.stanleycen.facepunch.fragment;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
@@ -25,17 +26,37 @@ import hugo.weaving.DebugLog;
 public class HomeFragment extends Fragment implements IBackable, ITitleable {
     ForumPagerAdapter pagerAdapter;
 
+    @DebugLog
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     @ViewById
     ViewPager pager;
 
-    @AfterViews
-    void initAdapter() {
+    @DebugLog
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initAdapter(savedInstanceState);
+    }
 
+    @DebugLog
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("yolo", true);
+    }
+
+    void initAdapter(Bundle bundle) {
+        boolean b = false;
         pagerAdapter = new ForumPagerAdapter(getChildFragmentManager(), pager);
-        pagerAdapter.addPage(new ForumFragment_());
-        pagerAdapter.addPage(new ForumFragment_());
-        pagerAdapter.addPage(new ForumFragment_());
-
+        if (bundle == null) {
+            pagerAdapter.addPage(new ForumFragment_());
+            pagerAdapter.addPage(new ForumFragment_());
+            pagerAdapter.addPage(new ForumFragment_());
+        }
     }
 
     @DebugLog

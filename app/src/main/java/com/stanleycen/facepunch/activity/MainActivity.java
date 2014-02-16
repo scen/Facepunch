@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -13,12 +14,19 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.espian.showcaseview.OnShowcaseEventListener;
+import com.espian.showcaseview.ShowcaseView;
+import com.espian.showcaseview.targets.ActionViewTarget;
+import com.espian.showcaseview.targets.PointTarget;
+import com.espian.showcaseview.targets.ViewTarget;
+import com.espian.showcaseview.utils.ShowcaseAreaCalculator;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stanleycen.facepunch.R;
 import com.stanleycen.facepunch.adapter.NavDrawerListAdapter;
@@ -52,6 +60,7 @@ import hugo.weaving.DebugLog;
 public class MainActivity extends ActionBarActivity {
     SystemBarTintManager tintManager;
     String[] navMenuStrings;
+    Bundle instanceState = null;
     int pagerPos = 0;
 
     @ViewById
@@ -118,9 +127,14 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("nav_selected", navDrawer.getCheckedItemPosition()); // TODO: why the fuck is this -1
     }
 
     @Override
@@ -143,10 +157,18 @@ public class MainActivity extends ActionBarActivity {
                 }).setNegativeButton(android.R.string.no, null).show();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
     @DebugLog
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!EventBus.getDefault().isRegistered(this)) EventBus.getDefault().register(this);
 
         appTitle = drawerTitle = getTitle();
 
@@ -159,24 +181,17 @@ public class MainActivity extends ActionBarActivity {
             tintManager.setStatusBarTintResource(R.color.facepunch_red);
         }
 
-        if (savedInstanceState == null) {
-
-        }
-        else {
-
-        }
-
-        EventBus.getDefault().register(this);
+        instanceState = savedInstanceState;
     }
 
-    public void onEvent(PagerPosUpdate update) {
+    public void onEventMainThread(PagerPosUpdate update) {
         pagerPos = update.pos;
 //        drawerToggle.setDrawerIndicatorEnabled(pagerPos == 0); // wtf why does this crash with VerifyError
         boolean b = pagerPos == 0;
         drawerToggle.setDrawerIndicatorEnabled(b);
     }
 
-    public void onEvent(ActionBarTitleUpdateEvent update) {
+    public void onEventMainThread(ActionBarTitleUpdateEvent update) {
         if (update.title != null) {
             setTitle(update.title);
         }
@@ -200,10 +215,14 @@ public class MainActivity extends ActionBarActivity {
         navDrawer.setOnItemClickListener(new DrawerItemClickListener());
 
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.drawable.ic_navigation_drawer, R.string.app_name, R.string.app_name) {
+            boolean wasEnabled = false;
+
             @DebugLog
             @Override
             public void onDrawerOpened(View drawerView) {
                 getSupportActionBar().setTitle(appTitle);
+                wasEnabled = drawerToggle.isDrawerIndicatorEnabled();
+                drawerToggle.setDrawerIndicatorEnabled(true);
                 supportInvalidateOptionsMenu();
             }
 
@@ -211,6 +230,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onDrawerClosed(View drawerView) {
                 getSupportActionBar().setTitle(drawerTitle);
+                drawerToggle.setDrawerIndicatorEnabled(wasEnabled);
                 supportInvalidateOptionsMenu();
             }
         };
@@ -218,7 +238,58 @@ public class MainActivity extends ActionBarActivity {
         drawerLayout.setDrawerListener(drawerToggle);
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-        onDrawerItemSelect(0);
+        if (instanceState == null) {
+            onDrawerItemSelect(0);
+        }
+        else {
+            int pos = instanceState.getInt("nav_selected", 0);
+            navDrawer.setItemChecked(pos, true);
+            navDrawer.setSelection(pos);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!EventBus.getDefault().isRegistered(this)) EventBus.getDefault().register(this);
+    }
+
+    private void showDrawerShowcase() {
+        ShowcaseView.ConfigOptions co = new ShowcaseView.ConfigOptions();
+        Point size = Util.getScreenSize(getWindowManager().getDefaultDisplay());
+        PointTarget target = new PointTarget(0, size.y / 2);
+        ShowcaseView sv = ShowcaseView.insertShowcaseView(target, this, null, null, co);
+        sv.setOnShowcaseEventListener(new OnShowcaseEventListener() {
+            @Override
+            public void onShowcaseViewHide(ShowcaseView showcaseView) {
+
+            }
+
+            @Override
+            public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                Util.setFirstTimeDone(MainActivity.this, "nav_drawer");
+            }
+
+            @Override
+            public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+            }
+        });
+        sv.animateGesture(0, size.y / 2, size.x / 2, size.y / 2);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Util.isFirstTime(this, "nav_drawer")) {
+            drawerLayout.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    drawerLayout.openDrawer(Gravity.LEFT);
+                }
+            }, 1000);
+            showDrawerShowcase();
+        }
     }
 
     @OptionsItem(R.id.action_settings)

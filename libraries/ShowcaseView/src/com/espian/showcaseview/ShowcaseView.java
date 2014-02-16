@@ -1,8 +1,11 @@
 package com.espian.showcaseview;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -16,6 +19,7 @@ import android.os.Build;
 import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -134,7 +138,25 @@ public class ShowcaseView extends RelativeLayout
         options.showcaseId = getId();
         setConfigOptions(options);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            handleTransparency();
+        }
+
         init();
+    }
+
+    @TargetApi(19)
+    private void handleTransparency() {
+        mEndButton.setFitsSystemWindows(true);
+    }
+
+    int getNavbarHeight() {
+        Resources resources = getResources();
+        int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            return resources.getDimensionPixelSize(resourceId);
+        }
+        return 0;
     }
 
     private void init() {
@@ -161,6 +183,9 @@ public class ShowcaseView extends RelativeLayout
                 lps.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 int margin = ((Number) (metricScale * 12)).intValue();
                 lps.setMargins(margin, margin, margin, margin);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    lps.setMargins(margin, margin, margin, margin + getNavbarHeight());
+                }
             }
             mEndButton.setLayoutParams(lps);
             mEndButton.setText(
@@ -168,6 +193,11 @@ public class ShowcaseView extends RelativeLayout
             if (!hasCustomClickListener) {
                 mEndButton.setOnClickListener(this);
             }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                handleTransparency();
+            }
+
             addView(mEndButton);
         }
 
@@ -446,7 +476,7 @@ public class ShowcaseView extends RelativeLayout
         moveHand(startX, startY, endX, endY, absoluteCoordinates, new AnimationEndListener() {
             @Override
             public void onAnimationEnd() {
-                new CountDownTimer(1000, 500) {
+                new CountDownTimer(500, 500) {
                     @Override
                     public void onTick(long millisUntilFinished) {
 

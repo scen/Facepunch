@@ -1,9 +1,12 @@
 package com.stanleycen.facepunch.util;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.view.Display;
 import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
@@ -19,20 +22,36 @@ public class Util {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
-    public SharedPreferences getSharedPrefs(Context context) {
+    public static SharedPreferences getSharedPrefs(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
     }
 
+    @TargetApi(13)
+    private static Point getScreenSize13(Display d) {
+        Point p = new Point();
+        d.getSize(p);
+        return p;
+    }
+
+    public static Point getScreenSize(Display d) {
+        if (Build.VERSION.SDK_INT >= 13) {
+            return getScreenSize13(d);
+        }
+        else {
+            return new Point(d.getWidth(), d.getHeight());
+        }
+    }
+
     // if its the first time showing something, e.g. a ShowcaseView
-    public boolean isFirstTime(Context context, String pref) {
+    public static boolean isFirstTime(Context context, String pref) {
         return !getSharedPrefs(context).getBoolean(pref, false);
     }
 
-    public void setFirstTimeDone(Context context, String pref, boolean val) {
+    public static void setFirstTimeDone(Context context, String pref, boolean val) {
         getSharedPrefs(context).edit().putBoolean(pref, val).commit();
     }
 
-    public void setFirstTimeDone(Context context, String pref) {
+    public static void setFirstTimeDone(Context context, String pref) {
         setFirstTimeDone(context, pref, true);
     }
 

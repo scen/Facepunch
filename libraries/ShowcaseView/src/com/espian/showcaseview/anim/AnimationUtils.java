@@ -97,6 +97,10 @@ public class AnimationUtils {
                                                       float offsetStartX, float offsetStartY,
                                                       float offsetEndX, float offsetEndY,
                                                       final AnimationEndListener listener) {
+
+        canvasX = 0;
+        canvasY = 0;
+
         ViewHelper.setAlpha(view, INVISIBLE);
 
         ObjectAnimator alphaIn = ObjectAnimator.ofFloat(view, ALPHA, INVISIBLE, VISIBLE).setDuration(500);
