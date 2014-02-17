@@ -1,6 +1,5 @@
 package com.stanleycen.facepunch.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 class Forum {

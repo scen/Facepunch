@@ -7,7 +7,6 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,28 +22,19 @@ import android.widget.ListView;
 
 import com.espian.showcaseview.OnShowcaseEventListener;
 import com.espian.showcaseview.ShowcaseView;
-import com.espian.showcaseview.targets.ActionViewTarget;
 import com.espian.showcaseview.targets.PointTarget;
-import com.espian.showcaseview.targets.ViewTarget;
-import com.espian.showcaseview.utils.ShowcaseAreaCalculator;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stanleycen.facepunch.R;
 import com.stanleycen.facepunch.adapter.NavDrawerListAdapter;
 import com.stanleycen.facepunch.event.ActionBarTitleUpdateEvent;
 import com.stanleycen.facepunch.event.PagerPosUpdate;
-import com.stanleycen.facepunch.fragment.HomeFragment_;
-import com.stanleycen.facepunch.fragment.PopularFragment_;
-import com.stanleycen.facepunch.fragment.ReadFragment_;
+import com.stanleycen.facepunch.fragment.HomeFragment;
+import com.stanleycen.facepunch.fragment.PopularFragment;
+import com.stanleycen.facepunch.fragment.ReadFragment;
 import com.stanleycen.facepunch.model.IBackable;
 import com.stanleycen.facepunch.model.NavDrawerItem;
 import com.stanleycen.facepunch.util.API;
 import com.stanleycen.facepunch.util.Util;
-
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.OptionsItem;
-import org.androidannotations.annotations.OptionsMenu;
-import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 
@@ -55,18 +45,12 @@ import hugo.weaving.DebugLog;
  * Created by scen on 2/11/14.
  */
 
-@EActivity(R.layout.activity_main)
-@OptionsMenu(R.menu.menu_main)
 public class MainActivity extends ActionBarActivity {
     SystemBarTintManager tintManager;
     String[] navMenuStrings;
-    Bundle instanceState = null;
     int pagerPos = 0;
 
-    @ViewById
     DrawerLayout drawerLayout;
-
-    @ViewById
     ListView navDrawer;
 
     CharSequence drawerTitle;
@@ -114,6 +98,12 @@ public class MainActivity extends ActionBarActivity {
             case R.id.action_logout:
                 doLogout();
                 return true;
+            case R.id.action_settings:
+                onSettingsSelected();
+                return true;
+            case R.id.action_about:
+                onAboutSelected();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -121,7 +111,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void doLogout() {
         API.logout();
-        Intent intent = new Intent(this, LoginActivity_.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
     }
@@ -170,6 +160,11 @@ public class MainActivity extends ActionBarActivity {
 
         if (!EventBus.getDefault().isRegistered(this)) EventBus.getDefault().register(this);
 
+        setContentView(R.layout.activity_main);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        navDrawer = (ListView) findViewById(R.id.navDrawer);
+
         appTitle = drawerTitle = getTitle();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -181,7 +176,7 @@ public class MainActivity extends ActionBarActivity {
             tintManager.setStatusBarTintResource(R.color.facepunch_red);
         }
 
-        instanceState = savedInstanceState;
+        initNavDrawer(savedInstanceState);
     }
 
     public void onEventMainThread(PagerPosUpdate update) {
@@ -197,8 +192,7 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    @AfterViews
-    void initNavDrawer() {
+    void initNavDrawer(Bundle savedInstanceState) {
         navMenuStrings = getResources().getStringArray(R.array.nav_drawer_strings);
         TypedArray navMenuIcons = getResources().obtainTypedArray(R.array.nav_drawer_icons);
 
@@ -238,11 +232,11 @@ public class MainActivity extends ActionBarActivity {
         drawerLayout.setDrawerListener(drawerToggle);
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-        if (instanceState == null) {
+        if (savedInstanceState == null) {
             onDrawerItemSelect(0);
         }
         else {
-            int pos = instanceState.getInt("nav_selected", 0);
+            int pos = savedInstanceState.getInt("nav_selected", 0);
             navDrawer.setItemChecked(pos, true);
             navDrawer.setSelection(pos);
         }
@@ -292,14 +286,18 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    @OptionsItem(R.id.action_settings)
-    void settingsSelected() {
+    void onSettingsSelected() {
 
     }
 
-    @OptionsItem(R.id.action_about)
-    void aboutSelected() {
+    void onAboutSelected() {
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -313,13 +311,13 @@ public class MainActivity extends ActionBarActivity {
         Fragment fragment = null;
         switch (pos) {
             case 0:
-                fragment = new HomeFragment_();
+                fragment = new HomeFragment();
                 break;
             case 1:
-                fragment = new PopularFragment_();
+                fragment = new PopularFragment();
                 break;
             case 2:
-                fragment = new ReadFragment_();
+                fragment = new ReadFragment();
             default:
                 break;
         }

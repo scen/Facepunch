@@ -1,18 +1,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.stanleycen.facepunch">
 
+    <uses-sdk android:minSdkVersion="12"
+        android:targetSdkVersion="19" />
+
     <application android:allowBackup="true"
         android:label="@string/app_name"
         android:icon="@drawable/logo"
         android:name="FacepunchApplication"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.LoginActivity_" android:theme="@style/RealLoginTheme">
+        <activity android:name=".activity.LoginActivity" android:theme="@style/RealLoginTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity_" android:theme="@style/Theme.Maintheme">
+        <activity android:name=".activity.MainActivity" android:theme="@style/Theme.Maintheme">
         </activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>

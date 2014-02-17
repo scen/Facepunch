@@ -3,37 +3,38 @@ package com.stanleycen.facepunch.fragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.stanleycen.facepunch.R;
 import com.stanleycen.facepunch.adapter.ForumPagerAdapter;
-import com.stanleycen.facepunch.event.ActionBarTitleUpdateEvent;
-import com.stanleycen.facepunch.fragment.nested.ForumFragment_;
 import com.stanleycen.facepunch.model.IBackable;
 import com.stanleycen.facepunch.model.ITitleable;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
-
-import de.greenrobot.event.EventBus;
 import hugo.weaving.DebugLog;
 
 /**
  * Created by scen on 2/14/14.
  */
 
-@EFragment(R.layout.fragment_home)
 public class HomeFragment extends Fragment implements IBackable, ITitleable {
+    ViewPager pager;
     ForumPagerAdapter pagerAdapter;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_home, null);
+        pager = (ViewPager) root.findViewById(R.id.pager);
+        return root;
+    }
+
 
     @DebugLog
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
-    @ViewById
-    ViewPager pager;
 
     @DebugLog
     @Override
@@ -46,23 +47,28 @@ public class HomeFragment extends Fragment implements IBackable, ITitleable {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean("yolo", true);
+        outState.putInt("cnt", pagerAdapter.getCount());
     }
 
     void initAdapter(Bundle bundle) {
         boolean b = false;
         pagerAdapter = new ForumPagerAdapter(getChildFragmentManager(), pager);
         if (bundle == null) {
-            pagerAdapter.addPage(new ForumFragment_());
-            pagerAdapter.addPage(new ForumFragment_());
-            pagerAdapter.addPage(new ForumFragment_());
+            pagerAdapter.addPage();
+            pagerAdapter.addPage();
+            pagerAdapter.addPage();
+        }
+        else {
+            pagerAdapter.count = bundle.getInt("cnt", 0);
+            pagerAdapter.notifyDataSetChanged();
         }
     }
 
     @DebugLog
     @Override
     public boolean onBackPressed() {
-        return pagerAdapter.removeLast();
+//        return pagerAdapter.removeLast();
+        return true;
     }
 
     @Override

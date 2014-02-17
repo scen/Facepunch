@@ -9,8 +9,6 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
-import hugo.weaving.DebugLog;
-
 /**
  * Created by scen on 2/13/14.
  * Extend this by creating a constructor that calls this ctor with the desired args

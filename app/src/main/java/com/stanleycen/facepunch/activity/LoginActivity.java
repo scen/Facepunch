@@ -3,6 +3,7 @@ package com.stanleycen.facepunch.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
@@ -17,28 +18,16 @@ import com.stanleycen.facepunch.request.LoginRequest;
 import com.stanleycen.facepunch.util.API;
 import com.stanleycen.facepunch.util.Util;
 
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
-
 import de.greenrobot.event.EventBus;
 
-@EActivity(R.layout.activity_login)
 public class LoginActivity extends Activity {
     SystemBarTintManager tintManager;
     RotateAnimation logoAnimation;
     boolean showAnimation = false;
 
-    @ViewById
     EditText username;
-
-    @ViewById
     EditText password;
-
-    @ViewById
     Button loginButton;
-
-    @ViewById
     ImageView facepunchLogo;
 
     @Override
@@ -49,6 +38,13 @@ public class LoginActivity extends Activity {
             gotoMainActivity();
             return;
         }
+
+        setContentView(R.layout.activity_login);
+
+        username = (EditText) findViewById(R.id.username);
+        password = (EditText) findViewById(R.id.password);
+        loginButton = (Button) findViewById(R.id.loginButton);
+        facepunchLogo = (ImageView) findViewById(R.id.facepunchLogo);
 
         if (Util.isKitKat()) {
             tintManager = new SystemBarTintManager(this);
@@ -83,7 +79,7 @@ public class LoginActivity extends Activity {
     }
 
     private void gotoMainActivity() {
-        Intent intent = new Intent(this, MainActivity_.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
     }
@@ -94,8 +90,7 @@ public class LoginActivity extends Activity {
         loginButton.setEnabled(enabled);
     }
 
-    @Click
-    void loginButton() {
+    void onLoginButtonClick(View v) {
         facepunchLogo.startAnimation(logoAnimation);
         updateForm(false);
         showAnimation = true;

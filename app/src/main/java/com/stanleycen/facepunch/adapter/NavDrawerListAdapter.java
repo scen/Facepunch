@@ -7,7 +7,6 @@ import android.widget.BaseAdapter;
 
 import com.stanleycen.facepunch.model.NavDrawerItem;
 import com.stanleycen.facepunch.view.NavItemView;
-import com.stanleycen.facepunch.view.NavItemView_;
 
 import java.util.ArrayList;
 
@@ -42,7 +41,7 @@ public class NavDrawerListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         NavItemView navItemView;
         if (convertView == null) {
-           navItemView = NavItemView_.build(context);
+           navItemView = new NavItemView(context);
         }
         else {
             navItemView = (NavItemView) convertView;

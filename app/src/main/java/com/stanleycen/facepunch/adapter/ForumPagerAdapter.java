@@ -2,10 +2,9 @@ package com.stanleycen.facepunch.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -13,10 +12,8 @@ import com.stanleycen.facepunch.event.ActionBarTitleUpdateEvent;
 import com.stanleycen.facepunch.event.PagerPosUpdate;
 import com.stanleycen.facepunch.fragment.nested.ForumFragment;
 import com.stanleycen.facepunch.model.ITitleable;
-import com.stanleycen.facepunch.util.Util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 import de.greenrobot.event.EventBus;
 import hugo.weaving.DebugLog;
@@ -26,9 +23,19 @@ import hugo.weaving.DebugLog;
 */
 public class ForumPagerAdapter extends FragmentStatePagerAdapter {
     ViewPager pager;
-    List<Fragment> fragments = new ArrayList<Fragment>();
+    SparseArray<Fragment> fragmentMap;
+    HashMap<Fragment, Integer> keyMap;
+    public int count = 0;
     Fragment primary;
-    Fragment toDelete;
+
+    @DebugLog
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        Fragment f = fragmentMap.get(position);
+        keyMap.remove(f);
+        super.destroyItem(container, position, object);
+        fragmentMap.remove(position);
+    }
 
     @DebugLog
     @Override
@@ -37,39 +44,50 @@ public class ForumPagerAdapter extends FragmentStatePagerAdapter {
         primary = (Fragment) object;
     }
 
+    @DebugLog
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+        Fragment f = (Fragment) super.instantiateItem(container, position);
+        fragmentMap.put(position, f);
+        keyMap.put(f, position);
+        return f;
+    }
+
     public ForumPagerAdapter(FragmentManager manager, ViewPager pager) {
         super(manager);
         this.pager = pager;
+        fragmentMap = new SparseArray<>();
+        keyMap = new HashMap<>();
         pager.setAdapter(this);
         pager.setOnPageChangeListener(listener);
         pager.setPageTransformer(true, new ZoomOutPageTransformer());
     }
 
     @DebugLog
-    public void addPage(ForumFragment frag) {
-        fragments.add(frag);
+    public void addPage() {
+        count++;
         this.notifyDataSetChanged();
         pager.setCurrentItem(getCount() - 1);
     }
 
-    // @return true if it was removed, false otherwise
-    @DebugLog
-    public boolean removeLast() {
-        if (fragments.size() <= 1) return false;
-        pager.setCurrentItem(getCount() - 2);
-        return true;
-    }
+//    // @return true if it was removed, false otherwise
+//    @DebugLog
+//    public boolean removeLast() {
+//        if (fragments.size() <= 1) return false;
+//        pager.setCurrentItem(getCount() - 2);
+//        return true;
+//    }
 
+    @DebugLog
     @Override
     public Fragment getItem(int i) {
-        return fragments.get(i);
+        return ForumFragment.newInstance();
     }
 
     @DebugLog
     @Override
     public int getItemPosition(Object object) {
-        if (object == toDelete) {
-            toDelete = null;
+        if (keyMap.get(object) >= getCount()) {
             return POSITION_NONE;
         }
         return POSITION_UNCHANGED;
@@ -77,7 +95,7 @@ public class ForumPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return fragments.size();
+        return count;
     }
 
     ViewPager.SimpleOnPageChangeListener listener = new ViewPager.SimpleOnPageChangeListener() {
@@ -89,10 +107,13 @@ public class ForumPagerAdapter extends FragmentStatePagerAdapter {
             if (state == ViewPager.SCROLL_STATE_IDLE) {
                 if (pageChanged) {
                     if (pos < getCount() - 1) {
-                        toDelete = fragments.get(getCount() - 1);
-                        fragments.remove(getCount() - 1);
+                        count--;
                         ForumPagerAdapter.this.notifyDataSetChanged();
                     }
+
+                    // change nav drawer to up carat
+                    EventBus.getDefault().post(new PagerPosUpdate(pos));
+                    EventBus.getDefault().post(new ActionBarTitleUpdateEvent(((ITitleable) fragmentMap.get(pos)).getTitle()));
                     pageChanged = false;
                 }
             }
@@ -107,10 +128,6 @@ public class ForumPagerAdapter extends FragmentStatePagerAdapter {
             super.onPageSelected(position);
             pageChanged = true;
             pos = position;
-
-            // change nav drawer to up carat
-            EventBus.getDefault().post(new PagerPosUpdate(pos));
-            EventBus.getDefault().post(new ActionBarTitleUpdateEvent(((ITitleable) fragments.get(pos)).getTitle()));
         }
     };
     static public class ZoomOutPageTransformer implements ViewPager.PageTransformer {
