@@ -1,9 +1,11 @@
 package com.stanleycen.facepunch.adapter;
 
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +28,7 @@ public class ForumPagerAdapter extends FragmentStatePagerAdapter {
     SparseArray<Fragment> fragmentMap;
     HashMap<Fragment, Integer> keyMap;
     public int count = 0;
-    Fragment primary;
+    Fragment primary = null;
 
     @DebugLog
     @Override
@@ -39,9 +41,22 @@ public class ForumPagerAdapter extends FragmentStatePagerAdapter {
 
     @DebugLog
     @Override
-    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+    public void setPrimaryItem(ViewGroup container, final int position, Object object) {
         super.setPrimaryItem(container, position, object);
         primary = (Fragment) object;
+        // change nav drawer to up carat
+        if (primary != null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    EventBus.getDefault().post(new PagerPosUpdate(position));
+                    EventBus.getDefault().post(new ActionBarTitleUpdateEvent(((ITitleable) primary).getTitle()));
+                }
+            }).start();
+        }
+        else {
+            Log.d("e", "no update");
+        }
     }
 
     @DebugLog
@@ -110,10 +125,6 @@ public class ForumPagerAdapter extends FragmentStatePagerAdapter {
                         count--;
                         ForumPagerAdapter.this.notifyDataSetChanged();
                     }
-
-                    // change nav drawer to up carat
-                    EventBus.getDefault().post(new PagerPosUpdate(pos));
-                    EventBus.getDefault().post(new ActionBarTitleUpdateEvent(((ITitleable) fragmentMap.get(pos)).getTitle()));
                     pageChanged = false;
                 }
             }

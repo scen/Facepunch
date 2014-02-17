@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -66,6 +67,7 @@ public class MainActivity extends ActionBarActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
+    @DebugLog
     @Override
     public void setTitle(CharSequence title) {
         drawerTitle = title;
@@ -332,7 +334,8 @@ public class MainActivity extends ActionBarActivity {
                     .replace(R.id.contentFrame, fragment, "last_frag").addToBackStack("last_frag").commit();
             navDrawer.setItemChecked(pos, true);
             navDrawer.setSelection(pos);
-//            setTitle(navMenuStrings[pos]);
+            setTitle(navMenuStrings[pos]);
+//            getSupportActionBar().setTitle("aaaaaaaaaaaaaaaaaaaa"); // darn it
             drawerLayout.closeDrawer(navDrawer);
         }
     }
