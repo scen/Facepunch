@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stanleycen.facepunch.R;
 import com.stanleycen.facepunch.event.LoginResponseEvent;
-import com.stanleycen.facepunch.fragment.nested.ForumFragment;
 import com.stanleycen.facepunch.request.LoginRequest;
 import com.stanleycen.facepunch.util.API;
 import com.stanleycen.facepunch.util.Util;

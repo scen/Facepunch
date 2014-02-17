@@ -29,7 +29,8 @@ import com.stanleycen.facepunch.R;
 import com.stanleycen.facepunch.adapter.NavDrawerListAdapter;
 import com.stanleycen.facepunch.event.ActionBarTitleUpdateEvent;
 import com.stanleycen.facepunch.event.PagerPosUpdate;
-import com.stanleycen.facepunch.fragment.HomeFragment;
+import com.stanleycen.facepunch.fragment.BrowserFragment;
+import com.stanleycen.facepunch.fragment.ForumFragment;
 import com.stanleycen.facepunch.fragment.PopularFragment;
 import com.stanleycen.facepunch.fragment.ReadFragment;
 import com.stanleycen.facepunch.model.IBackable;
@@ -250,6 +251,8 @@ public class MainActivity extends ActionBarActivity {
             navDrawer.setItemChecked(pos, true);
             navDrawer.setSelection(pos);
         }
+
+        Util.setInsets(this, navDrawer);
     }
 
     @Override
@@ -322,13 +325,13 @@ public class MainActivity extends ActionBarActivity {
         Fragment fragment = null;
         switch (pos) {
             case 0:
-                fragment = new HomeFragment();
+                fragment = BrowserFragment.newInstance(ForumFragment.class, null);
                 break;
             case 1:
-                fragment = new PopularFragment();
+                fragment = BrowserFragment.newInstance(PopularFragment.class, null);
                 break;
             case 2:
-                fragment = new ReadFragment();
+                fragment = BrowserFragment.newInstance(ReadFragment.class, null);
             default:
                 break;
         }

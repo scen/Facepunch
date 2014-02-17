@@ -5,23 +5,32 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
+import com.haarman.listviewanimations.swinginadapters.prepared.SwingBottomInAnimationAdapter;
 import com.stanleycen.facepunch.R;
-import com.stanleycen.facepunch.model.IBackable;
+import com.stanleycen.facepunch.adapter.CardListAdapter;
+import com.stanleycen.facepunch.card.Card;
+import com.stanleycen.facepunch.card.SubforumCard;
+import com.stanleycen.facepunch.event.ActionBarTitleUpdateEvent;
 import com.stanleycen.facepunch.model.ITitleable;
+import com.stanleycen.facepunch.util.Util;
 
+import java.util.ArrayList;
+
+import de.greenrobot.event.EventBus;
 import hugo.weaving.DebugLog;
 
 /**
  * Created by scen on 2/13/14.
  */
 
-public class ReadFragment extends CardListFragment {
+public class ForumFragment extends CardListFragment {
     String name;
 
     @DebugLog
-    public static ReadFragment newInstance(Bundle args) {
-        ReadFragment f = new ReadFragment();
+    public static ForumFragment newInstance(Bundle args) {
+        ForumFragment f = new ForumFragment();
         f.setArguments(args);
         return f;
     }
@@ -40,14 +49,14 @@ public class ReadFragment extends CardListFragment {
         super.onActivityCreated(savedInstanceState);
 
         if (savedInstanceState == null) {
-            name = "Read View";
+            name = "Forum View";
         }
         else {
             name = savedInstanceState.getString("yolo", "damnit");
         }
     }
 
-    public ReadFragment() {
+    public ForumFragment() {
     }
 
 

@@ -1,13 +1,19 @@
 package com.stanleycen.facepunch.util;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Build;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Display;
+import android.view.View;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -24,6 +30,37 @@ public class Util {
 
     public static SharedPreferences getSharedPrefs(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+    }
+
+    public static void saveListViewState(Bundle outState, ListView cardListView) {
+        try {
+            int idx = cardListView.getFirstVisiblePosition();
+            View v = cardListView.getChildAt(0);
+            outState.putInt("card_list_view_idx", idx);
+            outState.putInt("card_list_view_top", (v == null) ? 0 : v.getTop());
+        }
+        catch (Throwable t) {
+            t.printStackTrace();
+            outState.putInt("card_list_view_idx", -1);
+        }
+    }
+
+    public static void restoreListViewState(Bundle savedInstanceState, ListView cardListView) {
+        int idx = savedInstanceState.getInt("card_list_view_idx", -1);
+        int top = savedInstanceState.getInt("card_list_view_top", -1);
+        if (idx != -1 && top != -1) {
+            cardListView.setSelectionFromTop(idx, top);
+        }
+    }
+
+    @TargetApi(19)
+    public static void setInsets(Activity context, View view) {
+        if (Util.isKitKat()) {
+            SystemBarTintManager tintManager = new SystemBarTintManager(context);
+            SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
+//            view.setPadding(view.getPaddingLeft(), view.getPaddingTop() + config.getPixelInsetTop(true), view.getPaddingRight(), view.getPaddingBottom());
+            view.setPadding(view.getPaddingLeft(), view.getPaddingTop() + config.getPixelInsetTop(true), view.getPaddingRight() + config.getPixelInsetRight(), config.getPixelInsetBottom());
+        }
     }
 
     @TargetApi(13)

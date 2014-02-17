@@ -5,23 +5,38 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.stanleycen.facepunch.R;
-import com.stanleycen.facepunch.model.IBackable;
+import com.stanleycen.facepunch.event.ActionBarTitleUpdateEvent;
 import com.stanleycen.facepunch.model.ITitleable;
 
+import de.greenrobot.event.EventBus;
 import hugo.weaving.DebugLog;
 
 /**
  * Created by scen on 2/13/14.
  */
 
-public class ReadFragment extends CardListFragment {
+public class ThreadFragment extends Fragment implements ITitleable {
     String name;
+    static int meep = 0;
+    TextView txtLabel;
+
+    public ThreadFragment() {
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_thread, null);
+        txtLabel = (TextView) root.findViewById(R.id.txtLabel);
+        return root;
+    }
+
 
     @DebugLog
-    public static ReadFragment newInstance(Bundle args) {
-        ReadFragment f = new ReadFragment();
+    public static ThreadFragment newInstance(Bundle args) {
+        ThreadFragment f = new ThreadFragment();
         f.setArguments(args);
         return f;
     }
@@ -30,7 +45,6 @@ public class ReadFragment extends CardListFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
         outState.putString("yolo", name);
     }
 
@@ -38,18 +52,20 @@ public class ReadFragment extends CardListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         if (savedInstanceState == null) {
-            name = "Read View";
+            name = "Thread View " + (++meep);
         }
         else {
             name = savedInstanceState.getString("yolo", "damnit");
         }
+        txtLabel.setText(name);
     }
 
-    public ReadFragment() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getUserVisibleHint()) EventBus.getDefault().post(new ActionBarTitleUpdateEvent(getTitle()));
     }
-
 
     @Override
     public String getTitle() {
