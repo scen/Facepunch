@@ -7,13 +7,13 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -53,6 +53,8 @@ public class MainActivity extends ActionBarActivity {
 
     DrawerLayout drawerLayout;
     ListView navDrawer;
+    boolean drawerWasEnabled = false;
+    boolean wasDrawerClick = false;
 
     CharSequence drawerTitle;
     CharSequence appTitle;
@@ -71,7 +73,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void setTitle(CharSequence title) {
         drawerTitle = title;
-        getSupportActionBar().setTitle(title);
+        if (!drawerLayout.isDrawerOpen(Gravity.LEFT)) getSupportActionBar().setTitle(title);
     }
 
     @Override
@@ -185,11 +187,14 @@ public class MainActivity extends ActionBarActivity {
         pagerPos = update.pos;
 //        drawerToggle.setDrawerIndicatorEnabled(pagerPos == 0); // wtf why does this crash with VerifyError
         boolean b = pagerPos == 0;
-        drawerToggle.setDrawerIndicatorEnabled(b);
+        drawerWasEnabled = b;
+        if (!drawerLayout.isDrawerOpen(Gravity.LEFT)) drawerToggle.setDrawerIndicatorEnabled(b);
     }
 
+    @DebugLog
     public void onEventMainThread(ActionBarTitleUpdateEvent update) {
         if (update.title != null) {
+            Log.d("TAG", update.title);
             setTitle(update.title);
         }
     }
@@ -211,13 +216,15 @@ public class MainActivity extends ActionBarActivity {
         navDrawer.setOnItemClickListener(new DrawerItemClickListener());
 
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.drawable.ic_navigation_drawer, R.string.app_name, R.string.app_name) {
-            boolean wasEnabled = false;
+            CharSequence titleOnOpen;
 
             @DebugLog
             @Override
             public void onDrawerOpened(View drawerView) {
+                wasDrawerClick = false;
+                titleOnOpen = getSupportActionBar().getTitle();
                 getSupportActionBar().setTitle(appTitle);
-                wasEnabled = drawerToggle.isDrawerIndicatorEnabled();
+                drawerWasEnabled = drawerToggle.isDrawerIndicatorEnabled();
                 drawerToggle.setDrawerIndicatorEnabled(true);
                 supportInvalidateOptionsMenu();
             }
@@ -226,8 +233,9 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onDrawerClosed(View drawerView) {
                 getSupportActionBar().setTitle(drawerTitle);
-                drawerToggle.setDrawerIndicatorEnabled(wasEnabled);
+                drawerToggle.setDrawerIndicatorEnabled(drawerWasEnabled);
                 supportInvalidateOptionsMenu();
+                wasDrawerClick = false;
             }
         };
 
@@ -305,6 +313,7 @@ public class MainActivity extends ActionBarActivity {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            wasDrawerClick = true;
             onDrawerItemSelect(position);
         }
     }
@@ -334,8 +343,7 @@ public class MainActivity extends ActionBarActivity {
                     .replace(R.id.contentFrame, fragment, "last_frag").addToBackStack("last_frag").commit();
             navDrawer.setItemChecked(pos, true);
             navDrawer.setSelection(pos);
-            setTitle(navMenuStrings[pos]);
-//            getSupportActionBar().setTitle("aaaaaaaaaaaaaaaaaaaa"); // darn it
+//            setTitle(navMenuStrings[pos]);
             drawerLayout.closeDrawer(navDrawer);
         }
     }

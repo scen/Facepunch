@@ -8,8 +8,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.stanleycen.facepunch.R;
+import com.stanleycen.facepunch.event.ActionBarTitleUpdateEvent;
 import com.stanleycen.facepunch.model.ITitleable;
 
+import de.greenrobot.event.EventBus;
 import hugo.weaving.DebugLog;
 
 /**
@@ -19,6 +21,8 @@ import hugo.weaving.DebugLog;
 public class ForumFragment extends Fragment implements ITitleable {
     static int meep = 0;
     TextView txtLabel;
+    String name;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -27,11 +31,11 @@ public class ForumFragment extends Fragment implements ITitleable {
         return root;
     }
 
-    String name;
 
     @DebugLog
-    public static ForumFragment newInstance() {
+    public static ForumFragment newInstance(Bundle args) {
         ForumFragment f = new ForumFragment();
+        f.setArguments(args);
         return f;
     }
 
@@ -40,6 +44,12 @@ public class ForumFragment extends Fragment implements ITitleable {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("yolo", name);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getUserVisibleHint()) EventBus.getDefault().post(new ActionBarTitleUpdateEvent(getTitle()));
     }
 
     @DebugLog

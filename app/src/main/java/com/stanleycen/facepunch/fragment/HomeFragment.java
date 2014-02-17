@@ -9,8 +9,12 @@ import android.view.ViewGroup;
 
 import com.stanleycen.facepunch.R;
 import com.stanleycen.facepunch.adapter.ForumPagerAdapter;
+import com.stanleycen.facepunch.fragment.nested.ForumFragment;
+import com.stanleycen.facepunch.fragment.nested.ThreadFragment;
 import com.stanleycen.facepunch.model.IBackable;
 import com.stanleycen.facepunch.model.ITitleable;
+
+import java.util.ArrayList;
 
 import hugo.weaving.DebugLog;
 
@@ -47,19 +51,22 @@ public class HomeFragment extends Fragment implements IBackable, ITitleable {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("cnt", pagerAdapter.getCount());
+        outState.putInt("page_count", pagerAdapter.getCount());
+        outState.putSerializable("fragment_type", pagerAdapter.fragmentType);
     }
 
     void initAdapter(Bundle bundle) {
         boolean b = false;
         pagerAdapter = new ForumPagerAdapter(getChildFragmentManager(), pager);
+
         if (bundle == null) {
-            pagerAdapter.addPage();
-            pagerAdapter.addPage();
-            pagerAdapter.addPage();
+            pagerAdapter.addPage(ThreadFragment.class, null);
+            pagerAdapter.addPage(ForumFragment.class, null);
+            pagerAdapter.addPage(ForumFragment.class, null);
         }
         else {
-            pagerAdapter.count = bundle.getInt("cnt", 0);
+            pagerAdapter.count = bundle.getInt("page_count", 0);
+            pagerAdapter.fragmentType = (ArrayList<Class>) bundle.getSerializable("fragment_type");
             pagerAdapter.notifyDataSetChanged();
         }
     }
@@ -67,8 +74,7 @@ public class HomeFragment extends Fragment implements IBackable, ITitleable {
     @DebugLog
     @Override
     public boolean onBackPressed() {
-//        return pagerAdapter.removeLast();
-        return true;
+        return pagerAdapter.removeLast();
     }
 
     @Override

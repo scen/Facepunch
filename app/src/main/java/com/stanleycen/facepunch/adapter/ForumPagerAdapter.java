@@ -1,6 +1,6 @@
 package com.stanleycen.facepunch.adapter;
 
-import android.os.SystemClock;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -12,9 +12,11 @@ import android.view.ViewGroup;
 
 import com.stanleycen.facepunch.event.ActionBarTitleUpdateEvent;
 import com.stanleycen.facepunch.event.PagerPosUpdate;
-import com.stanleycen.facepunch.fragment.nested.ForumFragment;
 import com.stanleycen.facepunch.model.ITitleable;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.greenrobot.event.EventBus;
@@ -24,11 +26,24 @@ import hugo.weaving.DebugLog;
 * Created by scen on 2/14/14.
 */
 public class ForumPagerAdapter extends FragmentStatePagerAdapter {
+    // mapping of Class -> newInstance Method
+    static HashMap<Class, Method> newInstanceMethods = new HashMap<>();
+
     ViewPager pager;
     SparseArray<Fragment> fragmentMap;
+    SparseArray<Bundle> bundleMap;
+    public ArrayList<Class> fragmentType;
     HashMap<Fragment, Integer> keyMap;
     public int count = 0;
-    Fragment primary = null;
+
+    @DebugLog
+    public static void registerFragmentType(Class clazz) {
+        try {
+            newInstanceMethods.put(clazz, clazz.getMethod("newInstance", Bundle.class));
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
 
     @DebugLog
     @Override
@@ -43,14 +58,14 @@ public class ForumPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public void setPrimaryItem(ViewGroup container, final int position, Object object) {
         super.setPrimaryItem(container, position, object);
-        primary = (Fragment) object;
+        final Fragment cur = (Fragment) object;
         // change nav drawer to up carat
-        if (primary != null) {
+        if (cur != null) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     EventBus.getDefault().post(new PagerPosUpdate(position));
-                    EventBus.getDefault().post(new ActionBarTitleUpdateEvent(((ITitleable) primary).getTitle()));
+                    EventBus.getDefault().post(new ActionBarTitleUpdateEvent(((ITitleable) cur).getTitle()));
                 }
             }).start();
         }
@@ -73,30 +88,41 @@ public class ForumPagerAdapter extends FragmentStatePagerAdapter {
         this.pager = pager;
         fragmentMap = new SparseArray<>();
         keyMap = new HashMap<>();
+        bundleMap = new SparseArray<>();
+        fragmentType = new ArrayList<>();
         pager.setAdapter(this);
         pager.setOnPageChangeListener(listener);
         pager.setPageTransformer(true, new ZoomOutPageTransformer());
     }
 
     @DebugLog
-    public void addPage() {
+    public void addPage(Class clazz, Bundle args) {
+        bundleMap.put(count, args);
+        fragmentType.add(clazz);
         count++;
         this.notifyDataSetChanged();
         pager.setCurrentItem(getCount() - 1);
     }
 
-//    // @return true if it was removed, false otherwise
-//    @DebugLog
-//    public boolean removeLast() {
-//        if (fragments.size() <= 1) return false;
-//        pager.setCurrentItem(getCount() - 2);
-//        return true;
-//    }
+    // @return true if it was removed, false otherwise
+    @DebugLog
+    public boolean removeLast() {
+        if (getCount() <= 1) return false;
+        pager.setCurrentItem(getCount() - 2);
+        return true;
+    }
 
     @DebugLog
     @Override
     public Fragment getItem(int i) {
-        return ForumFragment.newInstance();
+        try {
+            return (Fragment) newInstanceMethods.get(fragmentType.get(i)).invoke(null, bundleMap.get(i));
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @DebugLog
@@ -123,7 +149,14 @@ public class ForumPagerAdapter extends FragmentStatePagerAdapter {
                 if (pageChanged) {
                     if (pos < getCount() - 1) {
                         count--;
+                        fragmentType.remove(fragmentType.size() - 1);
+                        assert count == fragmentType.size();
                         ForumPagerAdapter.this.notifyDataSetChanged();
+                    }
+                    Fragment f = fragmentMap.get(pos);
+                    EventBus.getDefault().post(new PagerPosUpdate(pos));
+                    if (f != null) {
+                        EventBus.getDefault().post(new ActionBarTitleUpdateEvent(((ITitleable) f).getTitle()));
                     }
                     pageChanged = false;
                 }
