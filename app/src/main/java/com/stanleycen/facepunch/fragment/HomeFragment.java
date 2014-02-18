@@ -51,7 +51,7 @@ public class HomeFragment extends CardListFragment {
                 @Override
                 public void onResponse(String s) {
                     Util.toast(getActivity(), "Response");
-                    new AsyncTask<String, Void, Void>() {
+                    Util.executeAsyncTask(new AsyncTask<String, Void, Void>() {
                         @Override
                         protected Void doInBackground(String... params) {
                             forums = ResponseParser.parseHome(params[0]);
@@ -69,7 +69,7 @@ public class HomeFragment extends CardListFragment {
                                 }
                             }
                         }
-                    }.execute(s);
+                    }, s);
                 }
             }, new Response.ErrorListener() {
                 @Override

@@ -25,11 +25,25 @@ import java.util.Date;
  */
 public class Util {
     public static boolean isKitKat() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+        return getBuildVersion() >= Build.VERSION_CODES.KITKAT;
+    }
+
+    public static int getBuildVersion() {
+        return Build.VERSION.SDK_INT;
     }
 
     public static SharedPreferences getSharedPrefs(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+    }
+
+    @TargetApi(11)
+    public static <T> void executeAsyncTask(AsyncTask<T, ?, ?> task, T... params) {
+        if (getBuildVersion() >= 11) {
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
+        }
+        else {
+            task.execute(params);
+        }
     }
 
     public static void saveListViewState(Bundle outState, ListView cardListView) {
@@ -71,7 +85,7 @@ public class Util {
     }
 
     public static Point getScreenSize(Display d) {
-        if (Build.VERSION.SDK_INT >= 13) {
+        if (getBuildVersion() >= 13) {
             return getScreenSize13(d);
         }
         else {
