@@ -98,7 +98,7 @@ public class LoginActivity extends Activity {
         password.setError(null);
 
         LoginRequest req = new LoginRequest(username.getText().toString(), password.getText().toString());
-        API.queue.add(req);
+        API.addToQueue(req);
     }
 
     public void onEventMainThread(LoginResponseEvent loginResponseEvent) {

@@ -12,10 +12,12 @@ import com.stanleycen.facepunch.R;
 import com.stanleycen.facepunch.model.ICardItem;
 import com.stanleycen.facepunch.model.ICardListItem;
 
+import java.io.Serializable;
+
 /**
  * Created by scen on 2/16/14.
  */
-public abstract class Card implements ICardItem, ICardListItem {
+public abstract class Card extends ICardListItem implements ICardItem, Serializable {
     @Override
     public boolean isHeader() {
         return false;

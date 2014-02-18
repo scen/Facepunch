@@ -35,6 +35,7 @@ public class ForumPagerAdapter extends FragmentStatePagerAdapter {
     public ArrayList<Class> fragmentType;
     HashMap<Fragment, Integer> keyMap;
     public int count = 0;
+    Fragment toDelete;
 
     @DebugLog
     public static void registerFragmentType(Class clazz) {

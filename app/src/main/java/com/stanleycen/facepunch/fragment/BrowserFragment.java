@@ -9,11 +9,13 @@ import android.view.ViewGroup;
 
 import com.stanleycen.facepunch.R;
 import com.stanleycen.facepunch.adapter.ForumPagerAdapter;
+import com.stanleycen.facepunch.event.OpenSubforumEvent;
 import com.stanleycen.facepunch.model.IBackable;
 import com.stanleycen.facepunch.model.ITitleable;
 
 import java.util.ArrayList;
 
+import de.greenrobot.event.EventBus;
 import hugo.weaving.DebugLog;
 
 /**
@@ -28,9 +30,14 @@ public class BrowserFragment extends Fragment implements IBackable, ITitleable {
         BrowserFragment bf = new BrowserFragment();
         Bundle args = new Bundle();
         args.putSerializable("clazz", clazz);
+        if (argsForFirst == null) argsForFirst = new Bundle();
         args.putBundle("args_for_first", argsForFirst);
         bf.setArguments(args);
         return bf;
+    }
+
+    public void onEventMainThread(OpenSubforumEvent evt) {
+        pagerAdapter.addPage(SubforumFragment.class, SubforumFragment.makeArgs(evt.forum));
     }
 
     public BrowserFragment() {
@@ -44,10 +51,17 @@ public class BrowserFragment extends Fragment implements IBackable, ITitleable {
         return root;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this)) EventBus.getDefault().unregister(this);
+    }
+
     @DebugLog
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!EventBus.getDefault().isRegistered(this)) EventBus.getDefault().register(this);
     }
 
     @DebugLog

@@ -30,11 +30,12 @@ import com.stanleycen.facepunch.adapter.NavDrawerListAdapter;
 import com.stanleycen.facepunch.event.ActionBarTitleUpdateEvent;
 import com.stanleycen.facepunch.event.PagerPosUpdate;
 import com.stanleycen.facepunch.fragment.BrowserFragment;
-import com.stanleycen.facepunch.fragment.ForumFragment;
+import com.stanleycen.facepunch.fragment.HomeFragment;
 import com.stanleycen.facepunch.fragment.PopularFragment;
 import com.stanleycen.facepunch.fragment.ReadFragment;
 import com.stanleycen.facepunch.model.IBackable;
 import com.stanleycen.facepunch.model.NavDrawerItem;
+import com.stanleycen.facepunch.model.fp.FPForum;
 import com.stanleycen.facepunch.util.API;
 import com.stanleycen.facepunch.util.Util;
 
@@ -325,7 +326,7 @@ public class MainActivity extends ActionBarActivity {
         Fragment fragment = null;
         switch (pos) {
             case 0:
-                fragment = BrowserFragment.newInstance(ForumFragment.class, null);
+                fragment = BrowserFragment.newInstance(HomeFragment.class, null);
                 break;
             case 1:
                 fragment = BrowserFragment.newInstance(PopularFragment.class, null);

@@ -2,6 +2,7 @@ package com.stanleycen.facepunch.util;
 
 import android.content.Context;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.HttpClientStack;
 import com.android.volley.toolbox.Volley;
@@ -27,6 +28,10 @@ public class API {
 
     public static void logout() {
         store.clear();
+    }
+
+    public static <T> void addToQueue(Request<T> r) {
+        queue.add(r);
     }
 
     public static boolean isLoggedIn() {

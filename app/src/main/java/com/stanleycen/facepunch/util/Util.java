@@ -114,7 +114,12 @@ public class Util {
         return new Date();
     }
 
-    public static void toast(Context ctx, String str) {
-        Toast.makeText(ctx, str, Toast.LENGTH_SHORT).show();
+    public static void toast(final Activity ctx, final String str) {
+        ctx.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(ctx, str, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

@@ -10,13 +10,26 @@ import com.stanleycen.facepunch.R;
 import com.stanleycen.facepunch.card.CardItemTypes;
 import com.stanleycen.facepunch.util.RobotoFont;
 
+import java.io.Serializable;
+
 /**
  * Created by scen on 2/17/14.
  */
-public class DefaultTextHeader extends Header {
+public class DefaultTextHeader extends Header implements Serializable {
+    String text;
+
     @Override
     public int getViewType() {
         return CardItemTypes.DEFAULT_TEXT_HEADER.ordinal();
+    }
+
+    @Override
+    public boolean isSelectable() {
+        return false;
+    }
+
+    public DefaultTextHeader(String text) {
+        this.text = text;
     }
 
     @Override
@@ -28,7 +41,9 @@ public class DefaultTextHeader extends Header {
         }
 
         TextView text = (TextView) v.findViewById(R.id.text);
-        text.setTypeface(RobotoFont.obtainTypeface(context, RobotoFont.ROBOTO_LIGHT_ITALIC));
+        text.setText(this.text);
+
+        text.setTypeface(RobotoFont.obtainTypeface(context, RobotoFont.ROBOTO_CONDENSED_BOLD_ITALIC));
 
         return v;
     }
