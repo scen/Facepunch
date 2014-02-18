@@ -7,28 +7,33 @@ import android.view.ViewGroup;
 
 import com.haarman.listviewanimations.ArrayAdapter;
 import com.stanleycen.facepunch.card.Card;
+import com.stanleycen.facepunch.card.CardItemTypes;
 import com.stanleycen.facepunch.model.ICardItem;
+import com.stanleycen.facepunch.model.ICardListItem;
 
 import java.util.List;
+
+import hugo.weaving.DebugLog;
 
 /**
  * Created by scen on 2/17/14.
  */
-public class CardListAdapter extends ArrayAdapter<Card> {
+public class CardListAdapter extends ArrayAdapter<ICardListItem> {
     public LayoutInflater inflater;
     public Context context;
 
     @Override
     public int getViewTypeCount() {
-        return super.getViewTypeCount();
+        return CardItemTypes.values().length;
     }
 
+    @DebugLog
     @Override
     public int getItemViewType(int position) {
-        return super.getItemViewType(position);
+        return getItem(position).getViewType();
     }
 
-    public CardListAdapter(Context context, List<Card> items) {
+    public CardListAdapter(Context context, List<ICardListItem> items) {
         super(items);
         inflater = LayoutInflater.from(context);
         this.context = context;

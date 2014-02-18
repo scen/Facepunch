@@ -3,6 +3,8 @@ package com.stanleycen.facepunch;
 import android.app.Application;
 
 import com.stanleycen.facepunch.adapter.ForumPagerAdapter;
+import com.stanleycen.facepunch.card.Card;
+import com.stanleycen.facepunch.card.header.DefaultTextHeader;
 import com.stanleycen.facepunch.fragment.ForumFragment;
 import com.stanleycen.facepunch.fragment.PopularFragment;
 import com.stanleycen.facepunch.fragment.ReadFragment;
@@ -24,5 +26,6 @@ public class FacepunchApplication extends Application {
         ForumPagerAdapter.registerFragmentType(ThreadFragment.class);
         ForumPagerAdapter.registerFragmentType(PopularFragment.class);
         ForumPagerAdapter.registerFragmentType(ReadFragment.class);
+
     }
 }

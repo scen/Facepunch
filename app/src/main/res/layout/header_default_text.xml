@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@drawable/card_bg"
-    android:paddingBottom="@dimen/card_bottom_padding"
     android:layout_width="match_parent" android:layout_height="match_parent">
-    <ViewStub
+    <TextView
+        android:paddingLeft="10dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/contents">
-    </ViewStub>
+        android:id="@+id/text"
+        android:text="Header"
+        android:textSize="@dimen/header_text_size"
+        android:layout_height="match_parent" />
 </RelativeLayout>

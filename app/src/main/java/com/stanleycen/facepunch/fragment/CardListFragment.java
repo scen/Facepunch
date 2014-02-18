@@ -10,9 +10,10 @@ import android.widget.ListView;
 import com.haarman.listviewanimations.swinginadapters.prepared.SwingBottomInAnimationAdapter;
 import com.stanleycen.facepunch.R;
 import com.stanleycen.facepunch.adapter.CardListAdapter;
-import com.stanleycen.facepunch.card.Card;
+import com.stanleycen.facepunch.card.header.DefaultTextHeader;
 import com.stanleycen.facepunch.card.SubforumCard;
 import com.stanleycen.facepunch.event.ActionBarTitleUpdateEvent;
+import com.stanleycen.facepunch.model.ICardListItem;
 import com.stanleycen.facepunch.model.ITitleable;
 import com.stanleycen.facepunch.util.Util;
 
@@ -56,8 +57,11 @@ public abstract class CardListFragment extends Fragment implements ITitleable {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ArrayList<Card> cards = new ArrayList<>();
-        for (int i = 0; i < 20; i++) cards.add(new SubforumCard());
+        ArrayList<ICardListItem> cards = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            cards.add(new DefaultTextHeader());
+            cards.add(new SubforumCard());
+        }
 
         cardListAdapter = new CardListAdapter(getActivity(), cards);
         SwingBottomInAnimationAdapter swingBottomInAnimationAdapter = new SwingBottomInAnimationAdapter(cardListAdapter);

@@ -9,7 +9,6 @@ import android.view.ViewStub;
  * Created by scen on 2/16/14.
  */
 public interface ICardItem {
-    public int getViewType();
     public void getInnerView(LayoutInflater inflater, ViewStub stub, int position, Context context);
     public boolean isEnabled();
 }

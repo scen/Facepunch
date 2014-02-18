@@ -10,17 +10,23 @@ import android.widget.RelativeLayout;
 
 import com.stanleycen.facepunch.R;
 import com.stanleycen.facepunch.model.ICardItem;
+import com.stanleycen.facepunch.model.ICardListItem;
 
 /**
  * Created by scen on 2/16/14.
  */
-public abstract class Card implements ICardItem {
+public abstract class Card implements ICardItem, ICardListItem {
     @Override
-    public int getViewType() {
-        //TODO: temp
-        return 0;
+    public boolean isHeader() {
+        return false;
     }
 
+    @Override
+    public int getViewType() {
+        return CardItemTypes.CARD.ordinal();
+    }
+
+    @Override
     public View getView(LayoutInflater inflater, View convertView, int position, Context context) {
         ViewGroup v = (ViewGroup) convertView;
         ViewStub innerView = null;
@@ -39,7 +45,6 @@ public abstract class Card implements ICardItem {
         if (innerView == null) innerView = (ViewStub) v.findViewById(R.id.contents);
 
         getInnerView(inflater, innerView, position, context);
-
 
         return v;
     }
