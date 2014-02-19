@@ -12,6 +12,7 @@ import com.stanleycen.facepunch.adapter.ForumPagerAdapter;
 import com.stanleycen.facepunch.event.OpenSubforumEvent;
 import com.stanleycen.facepunch.model.IBackable;
 import com.stanleycen.facepunch.model.ITitleable;
+import com.stanleycen.facepunch.util.Util;
 
 import java.util.ArrayList;
 
@@ -54,14 +55,14 @@ public class BrowserFragment extends Fragment implements IBackable, ITitleable {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (EventBus.getDefault().isRegistered(this)) EventBus.getDefault().unregister(this);
+        Util.eventBusUnregister(this);
     }
 
     @DebugLog
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!EventBus.getDefault().isRegistered(this)) EventBus.getDefault().register(this);
+        Util.eventBusRegister(this);
     }
 
     @DebugLog

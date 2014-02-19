@@ -11,6 +11,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.stanleycen.facepunch.card.SubforumCard;
 import com.stanleycen.facepunch.card.header.DefaultTextHeader;
+import com.stanleycen.facepunch.event.HomeRequestResponseEvent;
 import com.stanleycen.facepunch.model.fp.FPForum;
 import com.stanleycen.facepunch.util.API;
 import com.stanleycen.facepunch.util.ResponseParser;
@@ -21,6 +22,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import hugo.weaving.DebugLog;
 
 /**
@@ -35,6 +37,21 @@ public class HomeFragment extends CardListFragment {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Util.eventBusUnregister(this);
+    }
+
+    public void onEventMainThread(HomeRequestResponseEvent event) {
+        for (FPForum forum : event.forums) {
+            cardListAdapter.add(new DefaultTextHeader(forum.name));
+            for (FPForum subforum : forum.subforums) {
+                cardListAdapter.add(new SubforumCard(subforum, true));
+            }
+        }
+    }
+
     @DebugLog
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,6 +62,8 @@ public class HomeFragment extends CardListFragment {
         }
         else {
         }
+
+        Util.eventBusRegister(this);
 
         if (forums == null) {
             API.addToQueue(new StringRequest("http://facepunch.com", new Response.Listener<String>() {
@@ -57,17 +76,8 @@ public class HomeFragment extends CardListFragment {
                             forums = ResponseParser.parseHome(params[0]);
 
                             Util.toast(getActivity(), "Done");
+                            EventBus.getDefault().post(new HomeRequestResponseEvent((ArrayList<FPForum>) forums));
                             return null;
-                        }
-
-                        @Override
-                        protected void onPostExecute(Void aVoid) {
-                            for (FPForum forum : forums) {
-                                cardListAdapter.add(new DefaultTextHeader(forum.name));
-                                for (FPForum subforum : forum.subforums) {
-                                    cardListAdapter.add(new SubforumCard(subforum));
-                                }
-                            }
                         }
                     }, s);
                 }

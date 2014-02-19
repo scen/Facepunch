@@ -156,7 +156,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        Util.eventBusUnregister(this);
     }
 
     @DebugLog
@@ -164,7 +164,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!EventBus.getDefault().isRegistered(this)) EventBus.getDefault().register(this);
+        Util.eventBusRegister(this);
 
         setContentView(R.layout.activity_main);
 
@@ -259,7 +259,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (!EventBus.getDefault().isRegistered(this)) EventBus.getDefault().register(this);
+        Util.eventBusRegister(this);
     }
 
     private void showDrawerShowcase() {

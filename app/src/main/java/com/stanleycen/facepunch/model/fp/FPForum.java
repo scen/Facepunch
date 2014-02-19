@@ -28,10 +28,10 @@ public class FPForum implements Serializable {
     public List<FPThread> threads = new ArrayList<>();
 
     public void fetch(final Callback callback) {
-        String url = "http://facepunch.com/";
-        if (id != -1) {
-            url = String.format("http://facepunch.com/forumdisplay.php?f=%d&page=%d", id, page);
-        }
+        fetched = false;
+        subforums.clear();
+        threads.clear();
+        String url = String.format("http://facepunch.com/forumdisplay.php?f=%d&page=%d", id, page);
         API.addToQueue(new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
@@ -39,11 +39,11 @@ public class FPForum implements Serializable {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
+                callback.onResult(false, null);
             }
         }));
     }
 
-    // @param id forumid, -1 is the home page
     public FPForum(int id, int page, String name) {
         this.id = id;
         this.name = name;

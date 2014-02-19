@@ -43,7 +43,12 @@ public class SubforumFragment extends CardListFragment {
         if (getArguments() != null && !isArgumentsExpired()) {
             forum = (FPForum) getArguments().getSerializable("forum");
             assert forum != null;
-            cardListAdapter.add(new SubforumCard(forum));
+            cardListAdapter.add(new SubforumCard(forum, false));
+            forum.fetch(new FPForum.Callback() {
+                @Override
+                public void onResult(boolean success, FPForum forum) {
+                }
+            });
         }
         else if (savedInstanceState != null) {
             forum = (FPForum) savedInstanceState.getSerializable("forum");

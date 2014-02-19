@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Point;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -14,11 +15,14 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+import com.stanleycen.facepunch.fragment.HomeFragment;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by scen on 2/11/14.
@@ -129,11 +133,20 @@ public class Util {
     }
 
     public static void toast(final Activity ctx, final String str) {
+        if (ctx == null) return;
         ctx.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 Toast.makeText(ctx, str, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public static void eventBusRegister(Object obj) {
+        if (!EventBus.getDefault().isRegistered(obj)) EventBus.getDefault().register(obj);
+    }
+
+    public static void eventBusUnregister(Object obj) {
+        if (EventBus.getDefault().isRegistered(obj)) EventBus.getDefault().unregister(obj);
     }
 }

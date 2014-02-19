@@ -75,7 +75,7 @@ public class LoginActivity extends Activity {
             }
         });
 
-        EventBus.getDefault().register(this);
+        Util.eventBusRegister(this);
     }
 
     private void gotoMainActivity() {
@@ -123,7 +123,7 @@ public class LoginActivity extends Activity {
     protected void onStop() {
         super.onStop();
 
-        EventBus.getDefault().unregister(this);
+        Util.eventBusUnregister(this);
     }
 
     @Override

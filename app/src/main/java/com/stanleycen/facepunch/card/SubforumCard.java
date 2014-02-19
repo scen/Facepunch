@@ -23,14 +23,16 @@ import de.greenrobot.event.EventBus;
  */
 public class SubforumCard extends Card implements Serializable {
     FPForum forum;
+    boolean selectable;
 
-    public SubforumCard(FPForum forum) {
+    public SubforumCard(FPForum forum, boolean selectable) {
         this.forum = forum;
+        this.selectable = selectable;
     }
 
     @Override
     public boolean isSelectable() {
-        return true;
+        return selectable;
     }
 
     @Override
