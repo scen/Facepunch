@@ -11,8 +11,6 @@ import android.widget.ListView;
 import com.haarman.listviewanimations.swinginadapters.prepared.SwingBottomInAnimationAdapter;
 import com.stanleycen.facepunch.R;
 import com.stanleycen.facepunch.adapter.CardListAdapter;
-import com.stanleycen.facepunch.card.header.DefaultTextHeader;
-import com.stanleycen.facepunch.card.SubforumCard;
 import com.stanleycen.facepunch.event.ActionBarTitleUpdateEvent;
 import com.stanleycen.facepunch.model.ICardListItem;
 import com.stanleycen.facepunch.model.ITitleable;
@@ -34,10 +32,11 @@ public abstract class CardListFragment extends Fragment implements ITitleable {
     CardListAdapter cardListAdapter;
     List<ICardListItem> cards;
 
-    public boolean isArgumentsExpired() {
+    public boolean isRelaunch() {
         if (getArguments() == null) return true;
         return getArguments().getBoolean(EXPIRED_ARGUMENTS, false);
     }
+
 
     @DebugLog
     @Override
@@ -65,7 +64,7 @@ public abstract class CardListFragment extends Fragment implements ITitleable {
         if (savedInstanceState != null) {
             cards = (ArrayList<ICardListItem>) savedInstanceState.getSerializable("cards");
         }
-        if (cards == null || !isArgumentsExpired()) cards = new ArrayList<>();
+        if (cards == null || !isRelaunch()) cards = new ArrayList<>();
         cardListAdapter = new CardListAdapter(getActivity(), cards);
     }
 

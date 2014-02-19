@@ -11,14 +11,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.stanleycen.facepunch.card.SubforumCard;
 import com.stanleycen.facepunch.card.header.DefaultTextHeader;
-import com.stanleycen.facepunch.event.HomeRequestResponseEvent;
+import com.stanleycen.facepunch.event.HomeDataEvent;
 import com.stanleycen.facepunch.model.fp.FPForum;
 import com.stanleycen.facepunch.util.API;
 import com.stanleycen.facepunch.util.ResponseParser;
 import com.stanleycen.facepunch.util.Util;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +42,7 @@ public class HomeFragment extends CardListFragment {
         Util.eventBusUnregister(this);
     }
 
-    public void onEventMainThread(HomeRequestResponseEvent event) {
+    public void onEventMainThread(HomeDataEvent event) {
         for (FPForum forum : event.forums) {
             cardListAdapter.add(new DefaultTextHeader(forum.name));
             for (FPForum subforum : forum.subforums) {
@@ -74,9 +73,8 @@ public class HomeFragment extends CardListFragment {
                         @Override
                         protected Void doInBackground(String... params) {
                             forums = ResponseParser.parseHome(params[0]);
-
                             Util.toast(getActivity(), "Done");
-                            EventBus.getDefault().post(new HomeRequestResponseEvent((ArrayList<FPForum>) forums));
+                            EventBus.getDefault().post(new HomeDataEvent((ArrayList<FPForum>) forums));
                             return null;
                         }
                     }, s);

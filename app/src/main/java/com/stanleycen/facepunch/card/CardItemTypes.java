@@ -5,5 +5,5 @@ package com.stanleycen.facepunch.card;
  */
 public enum CardItemTypes {
     CARD,
-    DEFAULT_TEXT_HEADER
+    DEFAULT_TEXT_HEADER,
 }

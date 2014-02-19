@@ -77,7 +77,7 @@ public class Util {
             SystemBarTintManager tintManager = new SystemBarTintManager(context);
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
 //            view.setPadding(view.getPaddingLeft(), view.getPaddingTop() + config.getPixelInsetTop(true), view.getPaddingRight(), view.getPaddingBottom());
-            view.setPadding(view.getPaddingLeft(), view.getPaddingTop() + config.getPixelInsetTop(true), view.getPaddingRight() + config.getPixelInsetRight(), config.getPixelInsetBottom());
+            view.setPadding(view.getPaddingLeft(), view.getPaddingTop() + config.getPixelInsetTop(true), view.getPaddingRight() + config.getPixelInsetRight(), view.getPaddingBottom() + config.getPixelInsetBottom());
         }
     }
 

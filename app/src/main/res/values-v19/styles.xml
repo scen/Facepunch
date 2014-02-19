@@ -28,7 +28,11 @@
     <style name="CardListView" parent="Theme.Maintheme">
         <item name="android:divider">@android:color/transparent</item>
         <item name="android:dividerHeight">@dimen/card_bottom_padding</item>
-        <item name="android:layout_margin">@dimen/card_bottom_padding</item>
+        <item name="android:paddingBottom">@dimen/card_bottom_padding</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:layout_marginTop">@dimen/card_bottom_padding</item>
+        <item name="android:layout_marginRight">@dimen/card_bottom_padding</item>
+        <item name="android:layout_marginLeft">@dimen/card_bottom_padding</item>
         <!--<item name="android:paddingTop">@dimen/card_bottom_padding</item>-->
         <item name="android:scrollbarStyle">outsideInset</item>
         <item name="android:scrollbars">none</item>

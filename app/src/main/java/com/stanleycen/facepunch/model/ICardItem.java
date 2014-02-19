@@ -10,5 +10,4 @@ import android.view.ViewStub;
  */
 public interface ICardItem {
     public void getInnerView(LayoutInflater inflater, ViewStub stub, int position, Context context);
-    public boolean isEnabled();
 }

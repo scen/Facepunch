@@ -12,7 +12,9 @@ import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.stanleycen.facepunch.R;
 import com.stanleycen.facepunch.event.OpenSubforumEvent;
 import com.stanleycen.facepunch.model.fp.FPForum;
+import com.stanleycen.facepunch.model.fp.FPThread;
 import com.stanleycen.facepunch.util.RobotoFont;
+import com.stanleycen.facepunch.util.Util;
 
 import java.io.Serializable;
 
@@ -21,12 +23,12 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by scen on 2/16/14.
  */
-public class SubforumCard extends Card implements Serializable {
-    FPForum forum;
+public class ThreadCard extends Card implements Serializable {
+    FPThread thread;
     boolean selectable;
 
-    public SubforumCard(FPForum forum, boolean selectable) {
-        this.forum = forum;
+    public ThreadCard(FPThread thread, boolean selectable) {
+        this.thread = thread;
         this.selectable = selectable;
     }
 
@@ -37,26 +39,32 @@ public class SubforumCard extends Card implements Serializable {
 
     @Override
     public void onClick() {
-        EventBus.getDefault().post(new OpenSubforumEvent(forum));
     }
 
     @Override
     public void getInnerView(LayoutInflater inflater, ViewStub stub, int position, Context context) {
-        stub.setLayoutResource(R.layout.card_subforum);
+        stub.setLayoutResource(R.layout.card_thread);
         ViewGroup v = (ViewGroup) stub.inflate();
 
         TextView title = (TextView) v.findViewById(R.id.title);
-        TextView desc = (TextView) v.findViewById(R.id.desc);
+        TextView info = (TextView) v.findViewById(R.id.info);
 
-        title.setText(forum.name);
+        title.setText(thread.title);
         title.setTypeface(RobotoFont.obtainTypeface(context, RobotoFont.ROBOTO_LIGHT));
 
-        if (forum.desc != null) {
-            desc.setText(forum.desc);
-            desc.setTypeface(RobotoFont.obtainTypeface(context, RobotoFont.ROBOTO_CONDENSED_LIGHT));
+
+        if (thread.sticky) {
+            title.setBackgroundColor(context.getResources().getColor(R.color.thread_sticky));
         }
-        else {
-            desc.setVisibility(View.GONE);
-        }
+
+        info.setTypeface(RobotoFont.obtainTypeface(context, RobotoFont.ROBOTO_LIGHT));
+//
+//        if (forum.desc != null) {
+//            desc.setText(forum.desc);
+//            desc.setTypeface(RobotoFont.obtainTypeface(context, RobotoFont.ROBOTO_CONDENSED_LIGHT_ITALIC));
+//        }
+//        else {
+//            desc.setVisibility(View.GONE);
+//        }
     }
 }

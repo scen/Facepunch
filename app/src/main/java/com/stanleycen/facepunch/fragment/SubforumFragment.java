@@ -10,8 +10,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.stanleycen.facepunch.card.SubforumCard;
+import com.stanleycen.facepunch.card.ThreadCard;
 import com.stanleycen.facepunch.card.header.DefaultTextHeader;
+import com.stanleycen.facepunch.event.SubforumDataEvent;
 import com.stanleycen.facepunch.model.fp.FPForum;
+import com.stanleycen.facepunch.model.fp.FPThread;
 import com.stanleycen.facepunch.util.API;
 import com.stanleycen.facepunch.util.ResponseParser;
 import com.stanleycen.facepunch.util.Util;
@@ -35,25 +38,37 @@ public class SubforumFragment extends CardListFragment {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+    public void onEventMainThread(SubforumDataEvent event) {
+        if (!event.success || event.forum == null) {
+            Util.toast(getActivity(), "Something went wrong");
+            return;
+        }
+        forum = event.forum;
+        cardListAdapter.add(new DefaultTextHeader("Threads"));
+        for (FPThread thread : forum.threads) {
+            cardListAdapter.add(new ThreadCard(thread, true));
+        }
+    }
+
     @DebugLog
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null && !isArgumentsExpired()) {
+        Util.eventBusRegister(this);
+
+        if (getArguments() != null && !isRelaunch()) {
             forum = (FPForum) getArguments().getSerializable("forum");
-            assert forum != null;
+            forum.fetched = false; // TODO omg this is so ghetto
             cardListAdapter.add(new SubforumCard(forum, false));
-            forum.fetch(new FPForum.Callback() {
-                @Override
-                public void onResult(boolean success, FPForum forum) {
-                }
-            });
         }
         else if (savedInstanceState != null) {
             forum = (FPForum) savedInstanceState.getSerializable("forum");
         }
         assert forum != null;
+        if (!forum.fetched) {
+            forum.fetch();
+        }
     }
 
     public static Bundle makeArgs(FPForum forum) {
@@ -86,6 +101,12 @@ public class SubforumFragment extends CardListFragment {
         }
         else {
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Util.eventBusUnregister(this);
     }
 
     public SubforumFragment() {
