@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.stanleycen.facepunch.R;
 import com.stanleycen.facepunch.adapter.ForumPagerAdapter;
 import com.stanleycen.facepunch.event.OpenSubforumEvent;
+import com.stanleycen.facepunch.event.OpenThreadEvent;
 import com.stanleycen.facepunch.model.IBackable;
 import com.stanleycen.facepunch.model.ITitleable;
 import com.stanleycen.facepunch.util.Util;
@@ -39,6 +40,10 @@ public class BrowserFragment extends Fragment implements IBackable, ITitleable {
 
     public void onEventMainThread(OpenSubforumEvent evt) {
         pagerAdapter.addPage(SubforumFragment.class, SubforumFragment.makeArgs(evt.forum));
+    }
+
+    public void onEventMainThread(OpenThreadEvent evt) {
+        pagerAdapter.addPage(ThreadFragment.class, ThreadFragment.makeArgs(evt.thread));
     }
 
     public BrowserFragment() {

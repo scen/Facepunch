@@ -16,10 +16,12 @@ import android.widget.Toast;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.stanleycen.facepunch.fragment.HomeFragment;
+import com.stanleycen.facepunch.fragment.SubforumFragment;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.util.Date;
 
 import de.greenrobot.event.EventBus;
@@ -28,6 +30,12 @@ import de.greenrobot.event.EventBus;
  * Created by scen on 2/11/14.
  */
 public class Util {
+    private static final DecimalFormat decimalFormat = new DecimalFormat();
+
+    public static String getFormattedInt(int i) {
+        return decimalFormat.format(i);
+    }
+
     public static boolean isKitKat() {
         return getBuildVersion() >= Build.VERSION_CODES.KITKAT;
     }

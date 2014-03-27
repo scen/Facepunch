@@ -8,5 +8,5 @@
     <color name="nav_list_text_normal">#888888</color>
     <color name="nav_list_text_selected">#eeeeee</color>
     <color name="card_listview_background">#e5e5e5</color>
-    <color name="thread_sticky">#C3E6FF</color>
+    <color name="thread_sticky">#D4AAFF</color>
 </resources>

@@ -196,7 +196,6 @@ public class MainActivity extends ActionBarActivity {
     @DebugLog
     public void onEventMainThread(ActionBarTitleUpdateEvent update) {
         if (update.title != null) {
-            Log.d("TAG", update.title);
             setTitle(update.title);
         }
     }

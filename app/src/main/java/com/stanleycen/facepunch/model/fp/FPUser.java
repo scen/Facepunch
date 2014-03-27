@@ -8,6 +8,9 @@ import java.io.Serializable;
 public class FPUser implements Serializable {
     public String name;
     public int id;
+    public String joinDate;
+    public int postCount;
+    public String userGroupColor;
 
     public FPUser() {}
     public FPUser(String name, int id) {

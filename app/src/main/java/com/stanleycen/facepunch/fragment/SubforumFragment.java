@@ -32,6 +32,7 @@ import hugo.weaving.DebugLog;
 
 public class SubforumFragment extends CardListFragment {
     public FPForum forum;
+    public String fuck;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,7 +44,16 @@ public class SubforumFragment extends CardListFragment {
             Util.toast(getActivity(), "Something went wrong");
             return;
         }
+        if (forum != event.forum) { // not the correct forum update
+            return;
+        }
         forum = event.forum;
+        if (!forum.subforums.isEmpty()) {
+            cardListAdapter.add(new DefaultTextHeader("Subforums"));
+            for (FPForum subforum : forum.subforums) {
+                cardListAdapter.add(new SubforumCard(subforum, true));
+            }
+        }
         cardListAdapter.add(new DefaultTextHeader("Threads"));
         for (FPThread thread : forum.threads) {
             cardListAdapter.add(new ThreadCard(thread, true));
