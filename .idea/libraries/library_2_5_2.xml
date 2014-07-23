@@ -1,11 +1,10 @@
 <component name="libraryTable">
   <library name="library-2.5.2">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.nhaarman.listviewanimations/library/2.5.2/71ed91f526c48ea1ebcc7c78f530b914cbf06a3c/library-2.5.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.nhaarman.listviewanimations/library/2.5.2/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.nhaarman.listviewanimations/library/2.5.2/res" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.nhaarman.listviewanimations/library/2.5.2/8fd498f345ec1a1c837da5db67bfc2701f0c303f/library-2.5.2-sources.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>

@@ -1,8 +1,8 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.1"
+    buildToolsVersion "19.1.0"
 
     defaultConfig {
         minSdkVersion 12
@@ -40,12 +40,14 @@ apply plugin: 'hugo'
 //}
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:+'
+    compile 'com.android.support:appcompat-v7:19.+'
     compile 'com.readystatesoftware.systembartint:systembartint:+'
     compile 'de.greenrobot:eventbus:2.2.0'
     compile 'com.koushikdutta.urlimageviewhelper:urlimageviewhelper:1.0.4'
     compile 'com.mcxiaoke.volley:library:1.0.+'
-    compile 'com.nhaarman.listviewanimations:library:2.5.2'
+    compile('com.nhaarman.listviewanimations:library:2.5.2@aar') {
+        exclude group: 'com.google.android', module: 'support-v4'
+    }
     compile project(':libraries:ShowcaseView')
     compile fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 }
